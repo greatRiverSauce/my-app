@@ -18,16 +18,19 @@ app.config(function($routeProvider) {
         controller: 'userController'
     });
 });
+app.service('authService', [function () {
+    
+}]);
 app.controller('loginController', ['$location', '$scope', function ($location, $scope) {
     $scope.register = function () {
         $location.path('/register');
     }
-}])
+}]);
 app.controller('registerController', ['$location', '$scope', function ($location, $scope) {
     $scope.login = function () {
         $location.path('/login');
     }
-}])
+}]);
 app.controller('userController', ['$scope', '$http', function ($scope, $http) {
     $http.get('http://localhost:3000/getUsers').then(function (data) {
         //console.log(data.data);
