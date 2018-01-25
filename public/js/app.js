@@ -5,6 +5,9 @@ var app = angular.module('myapp', ['ngRoute']);
 app.config(function($routeProvider) {
     $routeProvider.when('/', {
         template: '<h1>welcome to my website!!</h1>'
+    }).when('/users', {
+        templateUrl: 'view/user.html',
+        controller: 'userController'
     });
 });
 app.controller('userController', ['$scope', '$http', function ($scope, $http) {
