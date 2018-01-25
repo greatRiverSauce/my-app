@@ -3,18 +3,24 @@
 
 <head>
     <title>Welcome to my website</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <link rel="icon" href="https://getbootstrap.com/favicon.ico">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://code.angularjs.org/1.5.5/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.5.5/angular-route.min.js"></script>
     <script src="http://localhost:3000/js/app.js"></script>
 </head>
 
 <body ng-app="myapp">
-    <div>
-        <a href="#/">Home</a>
-        <a href="#/users">Users</a>
-        <!--<a href="#/create">Create</a>-->
+    <div class="jumbotron">
+        <div class="container">
+            <div class="col-sm-8 col-sm-offset-2">
+                <div ng-class="{ 'alert': flash, 'alert-success': flash.type === 'success', 'alert-danger': flash.type === 'error' }" ng-if="flash" ng-bind="flash.message"></div>
+                <div ng-view></div>
+            </div>
+        </div>
     </div>
-<ng-view></ng-view>
+    <!--<ng-view></ng-view>-->
 </body>
 
 </html>

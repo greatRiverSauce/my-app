@@ -5,7 +5,13 @@ var app = angular.module('myapp', ['ngRoute']);
 
 app.config(function($routeProvider) {
     $routeProvider.when('/', {
-        template: '<h1>welcome to my website!!</h1>'
+        templateUrl: 'view/home.html'
+    }).when('/login', {
+        templateUrl:'view/login.html'
+    }).when('/register', {
+        templateUrl: 'view/register.html'
+    }).when('/home', {
+        templateUrl:'view/home.html'
     }).when('/users', {
         templateUrl: 'view/user.html',
         controller: 'userController'
