@@ -29,7 +29,7 @@ app.controller('registerController', ['$location', '$scope', function ($location
     }
 }])
 app.controller('userController', ['$scope', '$http', function ($scope, $http) {
-    $http.get('http://localhost:3000/getUsers').then(function (data) {
+    $http.get('https://localhost:3000/getUsers').then(function (data) {
         //console.log(data.data);
         $scope.user = data.data;
     }).catch(function (err) {
