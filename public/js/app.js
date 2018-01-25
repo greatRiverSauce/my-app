@@ -9,7 +9,8 @@ app.config(function($routeProvider) {
     }).when('/login', {
         templateUrl:'view/login.html'
     }).when('/register', {
-        templateUrl: 'view/register.html'
+        templateUrl: 'view/register.html',
+        controller: 'registerController'
     }).when('/home', {
         templateUrl:'view/home.html'
     }).when('/users', {
@@ -17,6 +18,16 @@ app.config(function($routeProvider) {
         controller: 'userController'
     });
 });
+app.controller('loginController', ['$location', '$scope', function ($location, $scope) {
+    $scope.register = function () {
+        $location.path('/register');
+    }
+}])
+app.controller('registerController', ['$location', '$scope', function ($location, $scope) {
+    $scope.login = function () {
+        $location.path('/login');
+    }
+}])
 app.controller('userController', ['$scope', '$http', function ($scope, $http) {
     $http.get('http://localhost:3000/getUsers').then(function (data) {
         //console.log(data.data);
