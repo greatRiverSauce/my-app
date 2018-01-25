@@ -1,0 +1,24 @@
+{
+  "name": "my-app",
+  "version": "1.0.0",
+  "description": "this is my app",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.16.2",
+    "mongodb": "^3.0.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/greatRiverSauce/my-app.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/greatRiverSauce/my-app/issues"
+  },
+  "homepage": "https://github.com/greatRiverSauce/my-app#readme"
+}
