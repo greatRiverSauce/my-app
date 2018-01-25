@@ -1,3 +1,7 @@
 <div ng-controller="userController">
-    {{user.username}}, {{user.password}}, {{user.org}}, {{user.location}}
+    <div ng-repeat="user in user">
+        {{user.username}}, {{user.password}}, {{user.org}}, {{user.location}}
+    </div>
+
+
 </div>

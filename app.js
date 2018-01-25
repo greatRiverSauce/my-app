@@ -4,17 +4,19 @@
 var express = require('express'),
     app = express(),
     mongoClient = require('mongodb').MongoClient;
+var bodyParser = require('body-parser');
 
 var port = process.env.PORT || 3000;
 var connectionUrl = 'mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao';
-var mongodb_obj = '';
+var db_obj = '';
 
 app.use(express.static('public'));
+app.use(bodyParser.json());
 
-mongoClient.connect(connectionUrl, function(err, client) {
+mongoClient.connect(connectionUrl, function(err, db) {
     if (!err) {
         //console.log(mongodb_obj);
-        mongodb_obj = client;
+        db_obj = db;
         app.listen(port, function() {
             console.log("Server running @ localhost:3000");
         })
@@ -29,8 +31,9 @@ app.get('/', function (req, res) {
 })
 
 app.get('/getUsers', function(req, res) {
-    var db = mongodb_obj.db('marlabs');
-    db.collection('users').find({}).toArray(function(err, docs) {
+    var db = db_obj.db('gao').collection('marlabs');
+    //console.log(db_obj.db('gao').collection('marlabs'));
+    db.find({}).toArray(function(err, docs) {
         //console.log(docs);
         res.send(docs);
     })
