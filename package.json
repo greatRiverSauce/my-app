@@ -4,6 +4,7 @@
   "description": "this is my app",
   "main": "app.js",
   "dependencies": {
+    "@uirouter/angularjs": "^1.0.13",
     "express": "^4.16.2",
     "mongodb": "^3.0.1"
   },
