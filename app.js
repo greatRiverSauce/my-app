@@ -3,31 +3,94 @@
  */
 var express = require('express'),
     app = express(),
-    mongoClient = require('mongodb').MongoClient;
-var bodyParser = require('body-parser');
-
-var port = process.env.PORT || 3000;
-var connectionUrl = 'mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao';
-var db_obj = '';
+    mongoose = require('mongoose'),
+    bodyParser = require('body-parser');
 
 app.use(express.static('public'));
 app.use(bodyParser.json());
 
-mongoClient.connect(connectionUrl, function(err, db) {
-    if (!err) {
-        //console.log(mongodb_obj);
-        db_obj = db;
-        app.listen(port, function() {
-            console.log("Server running @ localhost:3000");
-        })
+var port = process.env.PORT || 3000;
+
+app.listen(port, function() {
+    console.log('Server running @localhost:3000');
+})
+
+mongoose.connect('mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao');
+var db = mongoose.connection;
+// db.on('error', function() {
+//     console.log('Error connection to database');
+// })
+// db.on('open', function () {
+//     console.log('Connection established!!');
+// });
+
+//define a schema
+var UserSchema = mongoose.Schema({
+    'username' :{
+        type: String,
+        required: true
+    },
+    'password': {
+        type: String,
+        required: true
+    },
+    'firstname': {
+        type: String,
+        required: true
+    },
+    'lastname' : {
+        type: String,
+        required: true
     }
 });
-// app.listen(port, function () {
-//     console.log("server running @ localhost:3000");
+
+//create a model
+var User = mongoose.model('users', UserSchema);
+
+//create a document
+// var user1 = new User({
+//     'username': 'gao',
+//     'password': '123',
+//     'firstname': 'Xinhe',
+//     'lastname' : 'Gao'
+// });
+
+// user1.save(function(err) {
+//     if (!err) {
+//         console.log('document saved successfully!');
+//     } else {
+//         console.log(err);
+//     }
 // })
+// User.find({}, function (err, doc) {
+//     console.log(doc);
+// });
+
+// var db_obj = '';
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
+});
+
+app.get('/getUserByUsername/:username', function (req, res) {
+    var username = req.params.username;
+    User.find({"username": username}, function(err, doc){
+        if (!err) {
+            res.send(doc);
+        }
+    });
+});
+
+app.post('/createUser', function (req, res) {
+    var newUser = new User(req.body);
+    newUser.save(function (err) {
+        if (err) {
+            res.send({'msg': 'This username has been used, please change another one'});
+        } else {
+            res.send({'msg': 'Congratualations! Your account have been successfully created'});
+        }
+    })
+
 })
 
 app.get('/getUsers', function(req, res) {
@@ -41,4 +104,3 @@ app.get('/getUsers', function(req, res) {
 
 
 
-//mongodb://<dbuser>:<dbpassword>@ds113358.mlab.com:13358/gao
