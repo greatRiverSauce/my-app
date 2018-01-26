@@ -74,11 +74,26 @@ app.get('/', function (req, res) {
 
 app.get('/getUserByUsername/:username', function (req, res) {
     var username = req.params.username;
+    //console.log(username);
     User.find({"username": username}, function(err, doc){
         if (!err) {
             res.send(doc);
         }
     });
+});
+
+app.post('/updateUser', function(req, res) {
+    var query = {username: req.body.username};
+    var newVal = {
+        password: req.body.password,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname
+    }
+    console.log(query);
+    User.update(query, newVal, {multi:true}, function (err, doc) {
+        res.send({'flg':'success'});
+    })
+   //console.log(req.body);
 });
 
 app.post('/createUser', function (req, res) {

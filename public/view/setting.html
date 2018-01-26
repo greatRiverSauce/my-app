@@ -1,13 +1,40 @@
-<!--<div class="row">-->
-    <!--<div class="col" style="width: 500px;margin:auto;margin-top: 100px">-->
-        <!--<ul>-->
-            <!--<li>Username</li>-->
-            <!--<li>Firstname</li>-->
-            <!--<li>LastName</li>-->
-            <!--<li>Password</li>-->
-        <!--</ul>-->
-    <!--</div>-->
-<!--</div>-->
-<h4>Section 1</h4>
-Section 1 contents.
-<div app-view-segment="1"></div>
+<div ng-controller="settingController" style="width: 500px;margin:auto;margin-top: 100px">
+        <ul class="list-group" style="line-height:32px">
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col col-sm-10">
+                        <h5 class="list-group-item-heading">Username:</h5>
+                        {{user.username}}
+                    </div>
+                    <div class="col col-sm-2"></div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+
+                    <div class="col col-sm-10">
+                        <h5 class="list-group-item-heading">Password:</h5>
+                        <input type="password" style="border:none" ng-model="user.password" readonly>
+                    </div>
+                    <div class="col col-sm-2">
+                        <a class="btn btn-default btn-sm" href="#/setting/editPassword">Edit</a>
+
+                    </div>
+                </div>
+            </li>
+            <li class="list-group-item">
+                <div class="row">
+                    <div class="col col-sm-10">
+                        <h5 class="list-group-item-heading">Name:</h5>
+                        {{user.firstname}} &nbsp {{user.lastname}}
+                    </div>
+                    <div class="col col-sm-2">
+                        <a class="btn btn-default btn-sm" href="#/setting/editName">Edit</a>
+                    </div>
+                </div>
+
+            </li>
+
+        </ul>
+        <button class="btn btn-lg btn-primary btn-block" type="submit" ng-click="done()">Done</button>
+</div>

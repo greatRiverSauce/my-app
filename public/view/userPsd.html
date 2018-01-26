@@ -1,0 +1,15 @@
+<div ng-controller="userPsdController" style="width: 500px;margin:auto;margin-top: 50px">
+    <ul class="list-group" style="line-height:32px">
+        <li class="list-group-item">
+            <div>Use the form below to change the password for your account</div>
+            <hr>
+            <h5 class="list-group-item-heading">Current Password:</h5>
+            <input type="password" placeholder="Current password" ng-model="curPsd">
+
+            <h5 class="list-group-item-heading">New Password:</h5>
+            <input type="password" placeholder="New password" ng-model="newPsd">
+
+            <button class="btn btn-default" ng-click="savePsd()">Save Changes</button>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,15 @@
+<div ng-controller="userNameController" style="width: 500px;margin:auto;margin-top: 50px">
+    <ul class="list-group" style="line-height:32px">
+        <li class="list-group-item">
+            <div>Use the form below to change the name for your account</div>
+            <hr>
+            <h5 class="list-group-item-heading">Firstname:</h5>
+            <input type="text" placeholder="Firstname" ng-model="firstname">
+
+            <h5 class="list-group-item-heading">Lastname:</h5>
+            <input type="text" placeholder="Lastname" ng-model="lastname">
+
+            <button class="btn btn-default" ng-click="saveName()">Save Changes</button>
+        </li>
+    </ul>
+</div>
