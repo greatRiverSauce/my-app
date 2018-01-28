@@ -19,10 +19,13 @@ app.config(function($routeProvider) {
         templateUrl:'view/home.html',
     }).when('/profile', {
         templateUrl:'view/profile.html',
-        controller: 'profileController'
-        // resolve:['authService', function (authService) {
-        //     return authService.isLoggedIn('/profile');
-        // }]
+        controller: 'profileController',
+        resolve:['authService', function (authService) {
+            return authService.isLoggedIn('/profile');
+        }]
+    }).when('/myBlog', {
+        templateUrl: 'view/myBlog.html',
+        controller: 'myBlogController'
     }).when('/setting', {
         templateUrl: 'view/setting.html',
         controller: 'settingController',
@@ -167,6 +170,9 @@ app.controller('profileController', [function () {
 
 }])
 
+app.controller('myBlogController', [function () {
+
+}]);
 app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', function ($scope, $rootScope, $http, $location) {
     $scope.savePsd = function() {
         $http.get('http://localhost:3000/getUserByUsername/' + localStorage.getItem('logged'))

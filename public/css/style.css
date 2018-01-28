@@ -1,0 +1,64 @@
+* {
+    margin: 0;
+    padding: 0;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html,
+body{
+    background-color: #ffffff;
+    color: #7c7676;
+    font-family: 'lato', 'Arial', sans-serif;
+    font-size: 20px;
+    font-weight: 300;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+}
+header {
+    background-image: url("/img/home.jpg");
+    background-image: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url(/img/home.jpg);
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    background-attachment: fixed;
+}
+
+.blog,
+.info,
+.post {
+    background-color: transparent;
+    margin: 30px auto;
+    border: 2px dotted #777;
+    border-radius: 20px 20px 20px 20px;
+    padding: 20px 30px 20px 30px;
+    width: 100%;
+}
+
+.blog img,
+.post img {
+    width: 100%;
+}
+
+.blog h5,
+.post h5{
+    color: #bbb;
+    float: right;
+}
+.blog p,
+.post p {
+    color: #777;
+}
+.info .title {
+    margin-top: -25px;
+}
+.info img,
+.post img {
+    width: 100%;
+}
+.info ul li {
+    margin-top: 5px;
+    list-style: none;
+    margin-left: -25px;
+}
+

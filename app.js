@@ -93,7 +93,6 @@ app.post('/updateUser', function(req, res) {
     User.update(query, newVal, {multi:true}, function (err, doc) {
         res.send({'flg':'success'});
     })
-   //console.log(req.body);
 });
 
 app.post('/createUser', function (req, res) {
