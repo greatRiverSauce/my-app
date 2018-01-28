@@ -1,26 +1,15 @@
-<div class="container">
+<div ng-controller="profileController" style="width: 800px;margin:auto;margin-top: 50px">
     <div class="row">
         <div class="col-md-10 ">
             <form class="form-horizontal">
-                <fieldset>
 
                     <!-- Form Name -->
-                    <legend>User profile form requirement</legend>
-
-                    <!-- Text input-->
-
-
-
-
+                    <legend>User profile </legend>
                     <div class="form-group">
-                        <label class="col-md-4 control-label" for="Name (Full name)">Name (Full name)</label>
+                        <label class="col-md-4 control-label" >Name (Full name)</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-user">
-                                    </i>
-                                </div>
-                                <input id="Name (Full name)" name="Name (Full name)" type="text" placeholder="Name (Full name)" class="form-control input-md">
+                                <input type="text" style="border:none" class="form-control input-md" ng-model="user.name" readonly>
                             </div>
 
 
@@ -457,7 +446,6 @@
                         </div>
                     </div>
 
-                </fieldset>
             </form>
         </div>
         <div class="col-md-2 hidden-xs">
