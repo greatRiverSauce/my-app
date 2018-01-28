@@ -7,23 +7,21 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
+    <link rel="stylesheet" href = "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="/css/style.css">
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
 </head>
 
 <body ng-app="myapp">
-
-    <nav class="navbar navbar-default">
-        <div class="container">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">My travel blog</a>
-            </div>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="nav navbar-nav navbar-right mr-auto">
+    <header>
+        <nav>
+            <div class = "row">
+                <a href="#/home"><img src = "/img/earth1.png" alt="My Travel Dairy" class = "logo"></a>
+                <ul class="nav navbar-nav navbar-right mr-auto main-nav">
                     <li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>
                     <li class="dropdown">
                         <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&Lists <span class="caret"></span></a>
-                        <ul class="dropdown-menu">
+                        <ul class="dropdown-menu main-nav">
                             <li><a href="#/profile">Profile</a></li>
                             <li><a href="#/myBlog">My travel blog</a></li>
                             <li><a href="#/setting">Setting</a></li>
@@ -36,10 +34,39 @@
                     <li class="nav-item"><a href="#/logout"><i class="fa fa-comment"></i> Sign Out</a></li>
                 </ul>
             </div>
-
+        </nav>
+        <div class = "hero-text-box">
+            <h1>Hello traveller! <br>Special moments are never forgotten.</h1>
         </div>
-    </nav>
+    </header>
+    <!--<header>-->
+    <!--<nav class="navbar navbar-default">-->
+        <!--<div class="container">-->
+            <!--<div class="navbar-header">-->
+                <!--<a class="navbar-brand" href="/">My travel blog</a>-->
+            <!--</div>-->
+            <!--<div class="collapse navbar-collapse" id="navbarSupportedContent">-->
+                <!--<ul class="nav navbar-nav navbar-right mr-auto main-nav">-->
+                    <!--<li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>-->
+                    <!--<li class="dropdown">-->
+                        <!--<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&Lists <span class="caret"></span></a>-->
+                        <!--<ul class="dropdown-menu main-nav">-->
+                            <!--<li><a href="#/profile">Profile</a></li>-->
+                            <!--<li><a href="#/myBlog">My travel blog</a></li>-->
+                            <!--<li><a href="#/setting">Setting</a></li>-->
+                            <!--<li role="separator" class="divider"></li>-->
+                            <!--<li class="nav-item"><a href="#/login">Login</a></li>-->
+                            <!--<li class="nav-item"><a href="#/register">Sign Up</a></li>-->
+                        <!--</ul>-->
+                    <!--</li>-->
 
+                    <!--<li class="nav-item"><a href="#/logout"><i class="fa fa-comment"></i> Sign Out</a></li>-->
+                <!--</ul>-->
+            <!--</div>-->
+
+        <!--</div>-->
+    <!--</nav>-->
+    <!--</header>-->
     <div id="main">
 
         <!-- angular templating -->
@@ -47,10 +74,31 @@
         <div ng-view></div>
 
     </div>
-
-    <footer class="text-center">
-    Copyright@JackieGao
+    <footer>
+        <div class="row">
+            <div class="col span-1-of-2">
+                <ul class="footer-nav">
+                    <li><a href="#">About us</a></li>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">iOS App</a></li>
+                    <li><a href="#">Android App</a></li>
+                </ul>
+            </div>
+            <div class="col span-1-of-2">
+                <ul class="social-icons">
+                    <li><a href="#"><i class="ion-social-facebook"></i></a></li>
+                    <li><a href="#"><i class="ion-social-twitter"></i></a></li>
+                    <li><a href="#"><i class="ion-social-googleplus"></i></a></li>
+                    <li><a href="#"><i class="ion-social-instagram"></i></a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <p>Copyright &copy; 2018 by JackieGao. All rights resvered.</p>
+        </div>
     </footer>
+
     <script src="https://code.angularjs.org/1.5.5/angular.min.js"></script>
     <script src="https://code.angularjs.org/1.5.5/angular-route.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

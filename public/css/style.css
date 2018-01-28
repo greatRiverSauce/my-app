@@ -15,14 +15,74 @@ body{
     text-rendering: optimizeLegibility;
     overflow-x: hidden;
 }
+
+
+/*-------------------------*/
+/*HEADER*/
+/*-------------------------*/
 header {
-    background-image: url("/img/home.jpg");
-    background-image: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url(/img/home.jpg);
+    background-image: -webkit-gradient(linear,left top, left bottom,from(rgba(0,0,0,0.7)),to(rgba(0,0,0,0.7))), url(/img/home.jpg);
+    background-image: linear-gradient(rgba(0,0,0,0.7),rgba(0,0,0,0.7)), url(/img/home.jpg);
     background-size: cover;
     background-position: center;
     height: 100vh;
     background-attachment: fixed;
 }
+
+.hero-text-box {
+    color: white;
+    position: absolute;
+    width: 1140px;
+    top:50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+.logo {
+    height:150px;
+    width:auto;
+    float: left;
+    margin-top: 40px;
+    margin-left: 100px;
+
+}
+
+.main-nav {
+    float: right;
+    list-style: none;
+    margin-top:45px;
+    margin-right: 30px;
+    background-color:transparent;
+}
+
+.main-nav li {
+    display: inline-block;
+    margin-left:40px;
+    background-color:transparent;
+}
+
+.main-nav li a:link,
+.main-nav li a:visited {
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    font-size: 90%;
+    -webkit-transition:border-bottom 0.2s;
+    background-color:transparent;
+}
+
+.dropdown-menu {
+    background-color: transparent;
+}
+/*header {*/
+    /*background-image: url("/img/home.jpg");*/
+    /*background-image: linear-gradient(rgba(0,0,0,0.2),rgba(0,0,0,0.2)), url(/img/home.jpg);*/
+    /*background-size: cover;*/
+    /*background-position: center;*/
+    /*height: 100vh;*/
+    /*background-attachment: fixed;*/
+/*}*/
 
 .blog,
 .info,
@@ -61,4 +121,92 @@ header {
     list-style: none;
     margin-left: -25px;
 }
+
+/*-------------------------*/
+/*FOOTER*/
+/*-------------------------*/
+footer {
+    background-color: #333;
+    padding: 50px;
+}
+.footer-nav{
+    list-style: none;
+    float: left;
+}
+.social-icons {
+    list-style: none;
+    float: right;
+}
+
+.footer-nav li,
+.social-icons li {
+    display: inline-block;
+    margin-right: 20px;
+}
+
+.footer-nav li:last-child,
+.social-icons li:last-child {
+    margin-right: 0;
+}
+
+.footer-nav li a:link,
+.footer-nav li a:visited,
+.social-icons li a:link,
+.social-icons li a:visited{
+    text-decoration: none;
+    border: 0;
+    color: #888;
+}
+
+.footer-nav li a:link,
+.footer-nav li a:visited,
+.social-icons li a:link,
+.social-icons li a:visited {
+    text-decoration: none;
+    border: 0;
+    color: #888;
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
+}
+
+.footer-nav li a:hover,
+.footer-nav li a:active {
+    color: #ddd;
+}
+
+.social-icons li a:link,
+.social-icons li a:visited{
+    font-size: 160%;
+}
+
+.ion-social-facebook,
+.ion-social-twitter,
+.ion-social-googleplus,
+.ion-social-instagram {
+    -webkit-transition: color 0.2s;
+    transition: color 0.2s;
+}
+.ion-social-facebook:hover {
+    color: #3b5998;
+}
+
+.ion-social-twitter:hover {
+    color: #00aced;
+}
+
+.ion-social-googleplus:hover {
+    color: #dd4b39;
+}
+
+.ion-social-instagram:hover {
+    color: #517fa4;
+}
+
+footer p {
+    color: #888;
+    text-align: center;
+    font-size: 90%;
+    margin-top: 20px;
+}
+
 
