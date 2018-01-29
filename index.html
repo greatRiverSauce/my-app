@@ -12,40 +12,11 @@
     <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
 </head>
 
-<body ng-app="myapp">
-    <header>
-        <nav>
-            <div class = "row">
-                <a href="#/home"><img src = "/img/earth1.png" alt="My Travel Dairy" class = "logo"></a>
-                <ul class="nav navbar-nav navbar-right mr-auto main-nav">
-                    <li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>
-                    <li class="dropdown">
-                        <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&Lists <span class="caret"></span></a>
-                        <ul class="dropdown-menu main-nav">
-                            <li><a href="#/profile">Profile</a></li>
-                            <li><a href="#/myBlog">My travel blog</a></li>
-                            <li><a href="#/setting">Setting</a></li>
-                            <li role="separator" class="divider"></li>
-                            <li class="nav-item"><a href="#/login">Login</a></li>
-                            <li class="nav-item"><a href="#/register">Sign Up</a></li>
-                        </ul>
-                    </li>
-
-                    <li class="nav-item"><a href="#/logout"><i class="fa fa-comment"></i> Sign Out</a></li>
-                </ul>
-            </div>
-        </nav>
-        <div class = "hero-text-box">
-            <h1>Hello traveller! <br>Special moments are never forgotten.</h1>
-        </div>
-    </header>
-    <!--<header>-->
-    <!--<nav class="navbar navbar-default">-->
-        <!--<div class="container">-->
-            <!--<div class="navbar-header">-->
-                <!--<a class="navbar-brand" href="/">My travel blog</a>-->
-            <!--</div>-->
-            <!--<div class="collapse navbar-collapse" id="navbarSupportedContent">-->
+<body ng-app="myapp" >
+    <!--<header id="visiter" ng-show="localStorage.getItem('logged') === null ? true : false">-->
+        <!--<nav>-->
+            <!--<div class = "row">-->
+                <!--<a href="#/home"><img src = "/img/earth1.png" alt="My Travel Dairy" class = "logo"></a>-->
                 <!--<ul class="nav navbar-nav navbar-right mr-auto main-nav">-->
                     <!--<li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>-->
                     <!--<li class="dropdown">-->
@@ -63,10 +34,42 @@
                     <!--<li class="nav-item"><a href="#/logout"><i class="fa fa-comment"></i> Sign Out</a></li>-->
                 <!--</ul>-->
             <!--</div>-->
-
+        <!--</nav>-->
+        <!--<div class = "hero-text-box">-->
+            <!--<h1>Hello traveller! <br>Special moments are never forgotten.</h1>-->
         <!--</div>-->
-    <!--</nav>-->
     <!--</header>-->
+    <header>
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">My travel blog</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="nav navbar-nav navbar-right mr-auto main-nav">
+                        <li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>
+                        <li class="dropdown">
+                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&Lists <span class="caret"></span></a>
+                            <ul class="dropdown-menu main-nav">
+                                <li><a href="#/profile">Profile</a></li>
+                                <li><a href="#/setting">Setting</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li><a href="#/myBlog">My Travel Blog</a></li>
+                                <li><a href="#/newPost">Write A Post</a></li>
+                                <li role="separator" class="divider"></li>
+                                <li class="nav-item"><a href="#/login">Login</a></li>
+                                <li class="nav-item"><a href="#/register">Sign Up</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="nav-item"><a href="#/logout"><i class="fa fa-comment"></i> Sign Out</a></li>
+                    </ul>
+                </div>
+
+            </div>
+        </nav>
+    </header>
+
     <div id="main">
 
         <!-- angular templating -->
@@ -76,16 +79,15 @@
     </div>
     <footer>
         <div class="row">
-            <div class="col span-1-of-2">
+            <div class="col col-lg-6">
                 <ul class="footer-nav">
                     <li><a href="#">About us</a></li>
                     <li><a href="#">Blog</a></li>
-                    <li><a href="#">Press</a></li>
                     <li><a href="#">iOS App</a></li>
                     <li><a href="#">Android App</a></li>
                 </ul>
             </div>
-            <div class="col span-1-of-2">
+            <div class="col col-lg-6">
                 <ul class="social-icons">
                     <li><a href="#"><i class="ion-social-facebook"></i></a></li>
                     <li><a href="#"><i class="ion-social-twitter"></i></a></li>

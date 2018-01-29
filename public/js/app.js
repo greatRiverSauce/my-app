@@ -14,7 +14,6 @@ app.config(function($routeProvider) {
         controller: 'registerController'
     }).when('/logout', {
         templateUrl: 'view/home.html',
-        controller: 'logoutController'
     }).when('/home', {
         templateUrl:'view/home.html',
     }).when('/profile', {
@@ -26,6 +25,9 @@ app.config(function($routeProvider) {
     }).when('/myBlog', {
         templateUrl: 'view/myBlog.html',
         controller: 'myBlogController'
+    }).when('/newPost', {
+        templateUrl: 'view/newPost.html',
+        controller: 'newPostController'
     }).when('/setting', {
         templateUrl: 'view/setting.html',
         controller: 'settingController',
@@ -61,6 +63,10 @@ app.factory('authService', ['$http', '$location', '$rootScope', function ($http,
                 } else {
                     $location.path(path);
                 }
+            },
+            logOut: function() {
+                localStorage.removeItem('logged');
+                $location.path('/home');
             }
         }
 
@@ -108,6 +114,14 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
     }
 }])
 
+app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    if (localStorgae.getItem('logged') != null) {
+        $scope.user = true;
+    } else {
+        $scope.user = false;
+    }
+}])
+
 app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', function ($location, $scope, $http, $rootScope, userService) {
     $scope.login = function () {
         userService.GetByUsername($scope.username)
@@ -138,10 +152,6 @@ app.controller('registerController', ['$location', '$scope', '$http', 'userServi
     }
 }]);
 
-app.controller('logoutController', ['$location', '$rootScope', function($location, $rootscope) {
-    localStorage.removeItem('logged');
-    $location.path('/home');
-}]);
 
 app.controller('settingController', ['$scope', '$http', '$rootScope', 'userService', function ($scope, $http, $rootScope, userService) {
     $http.get('http://localhost:3000/getUserByUsername/' + localStorage.getItem('logged'))
@@ -173,6 +183,18 @@ app.controller('profileController', [function () {
 app.controller('myBlogController', [function () {
 
 }]);
+app.controller('newPostController', ['$scope','$http', function ($scope, $http) {
+    //var uid;
+    $http.get('http://localhost:3000/getUserByUsername/' + localStorage.getItem('logged'))
+        .then(function(data) {
+            //uid = data.data[0]._id;
+            $scope.action = "/newPost/"+data.data[0]._id;
+        });
+    // $http.post('http://localhost:3000/newPost/'+uid, {'form': $scope.myform})
+    //     .then(function (data) {
+    //         alert(data);
+    //     });
+}])
 app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', function ($scope, $rootScope, $http, $location) {
     $scope.savePsd = function() {
         $http.get('http://localhost:3000/getUserByUsername/' + localStorage.getItem('logged'))

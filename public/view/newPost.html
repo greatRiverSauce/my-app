@@ -1,0 +1,21 @@
+<div class="container" ng-controller="newPostController">
+    <form method="post" enctype="multipart/form-data" action={{action}}>
+        <div class="form-group">
+            <label for="title">Give a Name To Your Trip </label>
+            <input type="text" class="form-control" id="title" placeholder="title" name="title">
+        </div>
+        <div class="form-group">
+            <label for="uploads">Upload Your Beautiful Memories</label>
+            <input type="file" name="file" class="form-control-file" id="uploads">
+        </div>
+        <div class="form-group">
+            <label for="content">Things You Want To Share With</label>
+            <textarea class="form-control" id="content" rows="3" name="content"></textarea>
+        </div>
+
+        <div id="post">
+            <button class="btn btn-lg btn-primary btn-block" type="submit" value="submit">Post Your Memories</button>
+        </div>
+
+    </form>
+</div>

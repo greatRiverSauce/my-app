@@ -6,23 +6,21 @@ var express = require('express'),
     mongoose = require('mongoose'),
     bodyParser = require('body-parser');
 
-app.use(express.static('public'));
-app.use(bodyParser.json());
+var multer = require('multer');
+var upload = multer({dest:__dirname+'/uploads'});// image directory in the server
+
+mongoose.connect('mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao');
+
+
+
 
 var port = process.env.PORT || 3000;
+
+app.use(express.static('public'));
 
 app.listen(port, function() {
     console.log('Server running @localhost:3000');
 })
-
-mongoose.connect('mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao');
-var db = mongoose.connection;
-// db.on('error', function() {
-//     console.log('Error connection to database');
-// })
-// db.on('open', function () {
-//     console.log('Connection established!!');
-// });
 
 //define a schema
 var UserSchema = mongoose.Schema({
@@ -44,9 +42,39 @@ var UserSchema = mongoose.Schema({
     }
 });
 
+var ImgSchema = mongoose.Schema({
+    'fileName': {
+        type: String,
+        required: true
+    },
+    'originalName': {
+        type: String,
+        required: true
+    }
+});
+
+var PostSchema = mongoose.Schema({
+    'user': mongoose.Schema.ObjectId,
+    'title': {
+        type: String,
+        required: true
+    },
+    'content': {
+        type: String,
+        required: true
+    },
+    'comments': [mongoose.Schema.ObjectId],
+    'imgs':[],
+    'time': {
+        type: Date,
+        required: true
+    }
+
+});
 //create a model
 var User = mongoose.model('users', UserSchema);
-
+var Post = mongoose.model('posts',PostSchema);
+var Img = mongoose.model('images',ImgSchema);
 //create a document
 // var user1 = new User({
 //     'username': 'gao',
@@ -65,8 +93,43 @@ var User = mongoose.model('users', UserSchema);
 // User.find({}, function (err, doc) {
 //     console.log(doc);
 // });
+app.post('/newPost/:uid', upload.single('file'), function (req, res) {
+    var myFile = req.file;
+    var fileName = myFile.filename;
+    var originalName = myFile.originalname;
 
-// var db_obj = '';
+    var img = new Img({
+        fileName: fileName,
+        originalName: originalName
+    });
+    img.save(function (err) {
+        if (!err) {
+            var user = req.params.uid;
+            var title = req.body.title;
+            var content = req.body.content;
+            var comments = [];
+            var imgs = [];
+            imgs.push(fileName);
+            var time = new Date();
+            var post = new Post({
+                user: user,
+                title: title,
+                content: content,
+                comments: comments,
+                imgs: imgs,
+                time: time
+            });
+            post.save(function (err) {
+                res.redirect('/myBlog');
+            });
+        }
+    });
+
+});
+
+app.get('/myBlog', function (req, res) {
+    res.sendFile(__dirname + '/index.html');
+});
 
 app.get('/', function (req, res) {
     res.sendFile(__dirname + '/index.html');
@@ -107,14 +170,6 @@ app.post('/createUser', function (req, res) {
 
 })
 
-app.get('/getUsers', function(req, res) {
-    var db = db_obj.db('gao').collection('marlabs');
-    //console.log(db_obj.db('gao').collection('marlabs'));
-    db.find({}).toArray(function(err, docs) {
-        //console.log(docs);
-        res.send(docs);
-    })
-});
 
 
 
