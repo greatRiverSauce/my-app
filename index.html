@@ -56,9 +56,9 @@
                                 <li role="separator" class="divider"></li>
                                 <li><a href="#/myBlog">My Travel Blog</a></li>
                                 <li><a href="#/newPost">Write A Post</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li class="nav-item"><a href="#/login">Login</a></li>
-                                <li class="nav-item"><a href="#/register">Sign Up</a></li>
+                                <li role="separator" ng-show="!logged" class="divider"></li>
+                                <!--<li class="nav-item"><a href="#/login">Login</a></li>-->
+                                <li class="nav-item" ng-show="!logged"><a href="#/register">Sign Up</a></li>
                             </ul>
                         </li>
 

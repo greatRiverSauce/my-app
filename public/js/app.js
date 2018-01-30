@@ -39,6 +39,7 @@ app.factory('authService', ['$http', '$location', '$rootScope', '$q', function (
     var service = {};
     service.IsLoggedIn = IsLoggedIn;
     service.Logout = Logout;
+    service.Logged = Logged;
     return service;
 
     function IsLoggedIn() {
@@ -58,10 +59,20 @@ app.factory('authService', ['$http', '$location', '$rootScope', '$q', function (
             });
         return deferred.promise;
     }
+    function Logged(username) {
+        var deferred = $q.defer();
+        $http.post('http://localhost:3000/logged', {username: username})
+            .then(function (data) {
+                //alert(data.data.msg);
+                //$window.location.reload();
+                //$location.path('/');
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
 
 
 }]);
-
 app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $q, $http) {
     var service = {};
     service.Update = Update;
@@ -122,12 +133,10 @@ app.controller('loginController', ['$location', '$scope', '$http', '$rootScope',
             .then(function (data) {
                 if (data.length != 0) {
                     if ($scope.password == data[0].password) {
-                        //console.log($scope.username);
-                        $http.post('http://localhost:3000/logged', {username: $scope.username})
+                        authService.Logged($scope.username)
                             .then(function (data) {
-                                alert(data.data.msg);
+                                alert(data.msg);
                                 $window.location.reload();
-                                //$location.path('/');
                             })
                     } else {
                         alert("The username/password you entered don't match our record");
