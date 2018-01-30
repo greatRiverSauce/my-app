@@ -165,10 +165,9 @@ app.controller('settingController', ['$scope', '$http', '$location', '$rootScope
                 $location.path('/login');
             } else {
                 var username = data[0].username;
-                $http.get('http://localhost:3000/getUserByUsername/' + username)
-                    .then(function(data) {
-                        console.log(data);
-                        $scope.user = data.data[0];
+                userService.GetByUsername(username)
+                    .then(function (data) {
+                        $scope.user = data[0];
                         var newPsd = localStorage.getItem('newPsd');
                         var newFirstname = localStorage.getItem('newFirstname');
                         var newLastname = localStorage.getItem('newLastname')
@@ -182,7 +181,6 @@ app.controller('settingController', ['$scope', '$http', '$location', '$rootScope
                         if (newLastname) {
                             $scope.user.lastname = newLastname;
                         }
-
                     });
             }
         });
@@ -211,22 +209,21 @@ app.controller('myBlogController', ['authService', '$location', function (authSe
         }
     });
 }]);
-app.controller('newPostController', ['$scope','$http', 'authService', '$location', function ($scope, $http, authService, $location) {
+app.controller('newPostController', ['$scope','$http', 'authService', 'userService','$location', function ($scope, $http, authService, userService, $location) {
     authService.IsLoggedIn()
         .then(function (data) {
             if (data.length === 0) {
                 $location.path('/login');
             } else {
                 var username = data[0].username;
-                $http.get('http://localhost:3000/getUserByUsername/' + username)
-                    .then(function(data) {
-                        //uid = data.data[0]._id;
-                        $scope.action = "/newPost/"+data.data[0]._id;
+                userService.GetByUsername(username)
+                    .then(function (data) {
+                        $scope.action = "/newPost/"+data[0]._id;
                     });
             }
         });
 }]);
-app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', 'authService', function ($scope, $rootScope, $http, $location, authService) {
+app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', 'authService', 'userService', function ($scope, $rootScope, $http, $location, authService, userService) {
     $scope.savePsd = function() {
         authService.IsLoggedIn()
             .then(function (data) {
@@ -234,9 +231,9 @@ app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location
                     $location.path('/login');
                 } else {
                     var username = data[0].username;
-                    $http.get('http://localhost:3000/getUserByUsername/' + username)
+                    userService.GetByUsername(username)
                         .then(function (data) {
-                            if ($scope.curPsd == data.data[0].password) {
+                            if ($scope.curPsd == data[0].password) {
                                 localStorage.setItem('newPsd', $scope.newPsd);
                                 $location.path('/setting');
                             } else {
@@ -247,17 +244,17 @@ app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location
             });
     }
 }]);
-app.controller('userNameController', ['$scope', '$rootScope', '$http', '$location', 'authService', function ($scope, $rootScope, $http, $location, authService) {
+app.controller('userNameController', ['$scope', '$rootScope', '$http', '$location', 'authService', 'userService', function ($scope, $rootScope, $http, $location, authService, userService) {
     authService.IsLoggedIn()
         .then(function (data) {
             if (data.length === 0) {
                 $location.path('/login');
             } else {
                 var username = data[0].username;
-                $http.get('http://localhost:3000/getUserByUsername/' + username)
+                userService.GetByUsername(username)
                     .then(function (data) {
-                        $scope.firstname = data.data[0].firstname;
-                        $scope.lastname = data.data[0].lastname;
+                        $scope.firstname = data[0].firstname;
+                        $scope.lastname = data[0].lastname;
                     });
             }
         });
