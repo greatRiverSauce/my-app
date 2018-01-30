@@ -17,7 +17,7 @@ mongoose.connect('mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao');
 var port = process.env.PORT || 3000;
 
 app.use(express.static('public'));
-
+app.use(bodyParser.json());
 app.listen(port, function() {
     console.log('Server running @localhost:3000');
 })
@@ -71,28 +71,19 @@ var PostSchema = mongoose.Schema({
     }
 
 });
+
+var LoggedSchema = mongoose.Schema({
+    'username':{
+        type: String,
+        required: true
+    }
+});
 //create a model
 var User = mongoose.model('users', UserSchema);
 var Post = mongoose.model('posts',PostSchema);
 var Img = mongoose.model('images',ImgSchema);
-//create a document
-// var user1 = new User({
-//     'username': 'gao',
-//     'password': '123',
-//     'firstname': 'Xinhe',
-//     'lastname' : 'Gao'
-// });
+var Logged = mongoose.model('loggeds', LoggedSchema);
 
-// user1.save(function(err) {
-//     if (!err) {
-//         console.log('document saved successfully!');
-//     } else {
-//         console.log(err);
-//     }
-// })
-// User.find({}, function (err, doc) {
-//     console.log(doc);
-// });
 app.post('/newPost/:uid', upload.single('file'), function (req, res) {
     var myFile = req.file;
     var fileName = myFile.filename;
@@ -170,6 +161,29 @@ app.post('/createUser', function (req, res) {
 
 })
 
+app.post('/logged', function (req, res) {
+    var newLogged = new Logged(req.body);
+    //console.log(req.body);
+    newLogged.save(function (err) {
+        if (!err) {
+            res.send({'msg':'successfully logged in'});
+        }
+    });
+})
+
+app.get('/isLogged', function (req, res) {
+    Logged.find({}, function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    });
+});
+
+app.get('/logout', function (req, res) {
+    mongoose.connection.collections['loggeds'].drop( function(err, doc) {
+        res.send(doc);
+    });
+})
 
 
 
