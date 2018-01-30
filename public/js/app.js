@@ -8,10 +8,7 @@ app.config(function($routeProvider) {
         templateUrl: 'view/home.html'
     }).when('/login', {
         templateUrl:'view/login.html',
-        controller: 'loginController',
-        resolve:['authService', function (authService) {
-            return authService.isLoggedIn('/');
-        }]
+        controller: 'loginController'
     }).when('/register', {
         templateUrl: 'view/register.html',
         controller: 'registerController'
@@ -19,62 +16,49 @@ app.config(function($routeProvider) {
         templateUrl:'view/home.html'
     }).when('/profile', {
         templateUrl:'view/profile.html',
-        controller: 'profileController',
-        resolve:['authService', function (authService) {
-            return authService.isLoggedIn('/profile');
-        }]
+        controller: 'profileController'
     }).when('/myBlog', {
         templateUrl: 'view/myBlog.html',
-        controller: 'myBlogController',
-        resolve:['authService',function(authService) {
-            return authService.isLoggedIn('/myBlog');
-        }]
+        controller: 'myBlogController'
     }).when('/newPost', {
         templateUrl: 'view/newPost.html',
-        controller: 'newPostController',
-        resolve:['authService',function(authService) {
-            return authService.isLoggedIn('/newPost');
-        }]
+        controller: 'newPostController'
     }).when('/setting', {
         templateUrl: 'view/setting.html',
-        controller: 'settingController',
-        resolve:['authService', function (authService) {
-            return authService.isLoggedIn('/setting');
-        }]
+        controller: 'settingController'
     }).when('/setting/editPassword', {
         templateUrl: 'view/userPsd.html',
-        controller: 'userPsdController',
-        resolve:['authService', function (authService) {
-            return authService.isLoggedIn('/setting/editPassword');
-        }]
+        controller: 'userPsdController'
     }).when('/setting/editName', {
         templateUrl: 'view/userName.html',
-        controller: 'userNameController',
-        resolve:['authService', function (authService) {
-            return authService.isLoggedIn('/setting/editName');
-        }]
+        controller: 'userNameController'
     });
 });
 
-app.factory('authService', ['$http', '$location', '$rootScope', function ($http, $location, $rootScope) {
-        return {
-            isLoggedIn: function (path) {
-                $http.get('http://localhost:3000/isLogged')
-                    .then(function (data) {
-                        if (data.data.length === 0) {
-                            $location.path('/login');
-                        } else {
-                            $location.path(path);
-                        }
-                    });
-            },
-            logOut: function() {
-                $http.get('http://localhost:3000/logout')
-                    .then(function (data) {
-                        $location.path('/login');
-                    });
-            }
-        }
+app.factory('authService', ['$http', '$location', '$rootScope', '$q', function ($http, $location, $rootScope, $q) {
+    var service = {};
+    service.IsLoggedIn = IsLoggedIn;
+    service.Logout = Logout;
+    return service;
+
+    function IsLoggedIn() {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/isLogged')
+            .then(function (data) {
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
+    function Logout() {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/logout')
+            .then(function (data) {
+                deferred.resolve(data.data);
+                //$location.path('/login');
+            });
+        return deferred.promise;
+    }
+
 
 }]);
 
@@ -126,7 +110,13 @@ app.controller('headerController', ['$scope', '$rootScope', function ($scope, $r
         $scope.user = false;
     }
 }])
-app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', '$window', function ($location, $scope, $http, $rootScope, userService, $window) {
+app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', '$window', 'authService', function ($location, $scope, $http, $rootScope, userService, $window, authService) {
+    authService.IsLoggedIn()
+        .then(function (data) {
+            if (data.length !== 0) {
+                $location.path('/home');
+            }
+        });
     $scope.login = function () {
         userService.GetByUsername($scope.username)
             .then(function (data) {
@@ -159,111 +149,129 @@ app.controller('registerController', ['$location', '$scope', '$http', 'userServi
             });
     }
 }]);
-app.controller('settingController', ['$scope', '$http', '$rootScope', 'userService', function ($scope, $http, $rootScope, userService) {
-    $http.get('http://localhost:3000/isLogged')
+app.controller('settingController', ['$scope', '$http', '$location', '$rootScope', 'userService', 'authService', '$routeParams', function ($scope, $http, $rootScope, $location, userService, authService, $routeParams) {
+    authService.IsLoggedIn()
         .then(function (data) {
-            var username = data.data[0].username;
-            $http.get('http://localhost:3000/getUserByUsername/' + username)
-                .then(function(data) {
-                    $scope.user = data.data[0];
-                    if ($rootScope.newPsd != null) {
-                        $scope.user.password = $rootScope.newPsd
-                    }
-                    if ($rootScope.newFirstname != null) {
-                        $scope.user.firstname = $rootScope.newFirstname;
-                    }
-                    if ($rootScope.newLastname) {
-                        $scope.user.lastname = $rootScope.newLastname;
-                    }
+            if (data.length === 0) {
+                $location.path('/login');
+            } else {
+                var username = data[0].username;
+                $http.get('http://localhost:3000/getUserByUsername/' + username)
+                    .then(function(data) {
+                        console.log(data);
+                        $scope.user = data.data[0];
+                        var newPsd = localStorage.getItem('newPsd');
+                        var newFirstname = localStorage.getItem('newFirstname');
+                        var newLastname = localStorage.getItem('newLastname')
+                        //console.log(localStorage.getItem('newPsd'));
+                        if (newPsd != null) {
+                            $scope.user.password = newPsd;
+                        }
+                        if (newFirstname != null) {
+                            $scope.user.firstname = newFirstname;
+                        }
+                        if (newLastname) {
+                            $scope.user.lastname = newLastname;
+                        }
 
-                });
+                    });
+            }
         });
 
     $scope.done = function () {
+        localStorage.clear();
         userService.Update($scope.user)
             .then(function (data) {
                 alert(data);
             });
     }
 }])
-app.controller('profileController', [function () {
-
-}])
-app.controller('myBlogController', [function () {
-
-}]);
-app.controller('newPostController', ['$scope','$http', function ($scope, $http) {
-    //var uid;
-    $http.get('http://localhost:3000/isLogged')
-        .then(function (data) {
-            var username = data.data[0].username;
-            $http.get('http://localhost:3000/getUserByUsername/' + username)
-                .then(function(data) {
-                    //uid = data.data[0]._id;
-                    $scope.action = "/newPost/"+data.data[0]._id;
-                });
+app.controller('profileController', ['authService', '$location', function (authService, $location) {
+    authService.IsLoggedIn().
+        then(function (data) {
+            if (data.length === 0) {
+                $location.path('/login');
+            }
         });
-
 }])
-app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', function ($scope, $rootScope, $http, $location) {
-    $scope.savePsd = function() {
-        $http.get('http://localhost:3000/isLogged')
-            .then(function (data) {
-                var username = data.data[0].username;
+app.controller('myBlogController', ['authService', '$location', function (authService, $location) {
+    authService.IsLoggedIn().
+    then(function (data) {
+        if (data.length === 0) {
+            $location.path('/login');
+        }
+    });
+}]);
+app.controller('newPostController', ['$scope','$http', 'authService', '$location', function ($scope, $http, authService, $location) {
+    authService.IsLoggedIn()
+        .then(function (data) {
+            if (data.length === 0) {
+                $location.path('/login');
+            } else {
+                var username = data[0].username;
                 $http.get('http://localhost:3000/getUserByUsername/' + username)
                     .then(function(data) {
-                        if ($scope.curPsd == data.data[0].password) {
-                            $rootScope.newPsd = $scope.newPsd;
-                            $location.path('/setting');
-                        } else {
-                            alert("The password you entered don't match our record");
-                        }
+                        //uid = data.data[0]._id;
+                        $scope.action = "/newPost/"+data.data[0]._id;
                     });
+            }
+        });
+}]);
+app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', 'authService', function ($scope, $rootScope, $http, $location, authService) {
+    $scope.savePsd = function() {
+        authService.IsLoggedIn()
+            .then(function (data) {
+                if (data.length === 0) {
+                    $location.path('/login');
+                } else {
+                    var username = data[0].username;
+                    $http.get('http://localhost:3000/getUserByUsername/' + username)
+                        .then(function (data) {
+                            if ($scope.curPsd == data.data[0].password) {
+                                localStorage.setItem('newPsd', $scope.newPsd);
+                                $location.path('/setting');
+                            } else {
+                                alert("The password you entered don't match our record");
+                            }
+                        });
+                }
             });
-
     }
 }]);
-app.controller('userNameController', ['$scope', '$rootScope', '$http', '$location', function ($scope, $rootScope, $http, $location) {
-    $http.get('http://localhost:3000/isLogged')
+app.controller('userNameController', ['$scope', '$rootScope', '$http', '$location', 'authService', function ($scope, $rootScope, $http, $location, authService) {
+    authService.IsLoggedIn()
         .then(function (data) {
-            var username = data.data[0].username;
-            $http.get('http://localhost:3000/getUserByUsername/' + username)
-                .then(function(data) {
-                    $scope.firstname = data.data[0].firstname;
-                    $scope.lastname = data.data[0].lastname;
-                });
+            if (data.length === 0) {
+                $location.path('/login');
+            } else {
+                var username = data[0].username;
+                $http.get('http://localhost:3000/getUserByUsername/' + username)
+                    .then(function (data) {
+                        $scope.firstname = data.data[0].firstname;
+                        $scope.lastname = data.data[0].lastname;
+                    });
+            }
         });
-
     $scope.saveName = function () {
-        $rootScope.newFirstname = $scope.firstname;
-        $rootScope.newLastname = $scope.lastname;
+        localStorage.setItem('newFirstname', $scope.firstname);
+        localStorage.setItem('newLastname', $scope.lastname);
+
         $location.path('/setting');
     }
 }])
-app.controller('userController', ['$scope', '$http', function ($scope, $http) {
-    $http.get('http://localhost:3000/getUsers').then(function (data) {
-        //console.log(data.data);
-        $scope.user = data.data;
-    }).catch(function (err) {
-        console.log(err);
-    })
-}]);
-app.controller('headController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+app.controller('headController', ['$scope', '$http', '$window', 'authService', function($scope, $http, $window, authService) {
     $scope.logout = function () {
-        $http.get('http://localhost:3000/logout')
+        authService.Logout()
             .then(function (data) {
                 $window.location.reload();
             });
     }
-
-    $http.get('http://localhost:3000/isLogged')
+    authService.IsLoggedIn()
         .then(function (data) {
-            if (data.data.length === 0) {
+            if (data.length === 0) {
                 $scope.logged = false;
-                //$window.location.reload();
             } else {
                 $scope.logged = true;
-                //$window.location.reload();
 
             }
         });
