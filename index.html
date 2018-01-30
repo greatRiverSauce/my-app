@@ -39,7 +39,7 @@
             <!--<h1>Hello traveller! <br>Special moments are never forgotten.</h1>-->
         <!--</div>-->
     <!--</header>-->
-    <header>
+    <header ng-controller="headController">
         <nav class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
@@ -62,7 +62,8 @@
                             </ul>
                         </li>
 
-                        <li class="nav-item"><a href="#/logout"><i class="fa fa-comment"></i> Sign Out</a></li>
+                        <li class="nav-item" ng-show="!logged"><a href="#/login" ><i class="fa fa-comment"></i> Sign In</a></li>
+                        <li class="nav-item" ng-show="logged"><a href="" ng-click="logout()"><i class="fa fa-comment"></i> Sign Out</a></li>
                     </ul>
                 </div>
 

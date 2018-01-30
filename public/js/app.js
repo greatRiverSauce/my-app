@@ -8,15 +8,13 @@ app.config(function($routeProvider) {
         templateUrl: 'view/home.html'
     }).when('/login', {
         templateUrl:'view/login.html',
-        controller: 'loginController'
+        controller: 'loginController',
+        resolve:['authService', function (authService) {
+            return authService.isLoggedIn('/');
+        }]
     }).when('/register', {
         templateUrl: 'view/register.html',
         controller: 'registerController'
-    }).when('/logout', {
-        templateUrl: 'view/home.html',
-        resolve:['authService',function(authService) {
-            return authService.logOut();
-        }]
     }).when('/home', {
         templateUrl:'view/home.html'
     }).when('/profile', {
@@ -121,7 +119,6 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
         return deferred.promise;
     }
 }])
-
 app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
     if (localStorgae.getItem('logged') != null) {
         $scope.user = true;
@@ -129,8 +126,7 @@ app.controller('headerController', ['$scope', '$rootScope', function ($scope, $r
         $scope.user = false;
     }
 }])
-
-app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', function ($location, $scope, $http, $rootScope, userService) {
+app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', '$window', function ($location, $scope, $http, $rootScope, userService, $window) {
     $scope.login = function () {
         userService.GetByUsername($scope.username)
             .then(function (data) {
@@ -140,7 +136,8 @@ app.controller('loginController', ['$location', '$scope', '$http', '$rootScope',
                         $http.post('http://localhost:3000/logged', {username: $scope.username})
                             .then(function (data) {
                                 alert(data.data.msg);
-                                $location.path('/');
+                                $window.location.reload();
+                                //$location.path('/');
                             })
                     } else {
                         alert("The username/password you entered don't match our record");
@@ -151,7 +148,6 @@ app.controller('loginController', ['$location', '$scope', '$http', '$rootScope',
             });
     }
 }]);
-
 app.controller('registerController', ['$location', '$scope', '$http', 'userService', function ($location, $scope, $http, userService) {
     $scope.register = function () {
         userService.Create($scope.user)
@@ -163,8 +159,6 @@ app.controller('registerController', ['$location', '$scope', '$http', 'userServi
             });
     }
 }]);
-
-
 app.controller('settingController', ['$scope', '$http', '$rootScope', 'userService', function ($scope, $http, $rootScope, userService) {
     $http.get('http://localhost:3000/isLogged')
         .then(function (data) {
@@ -192,11 +186,9 @@ app.controller('settingController', ['$scope', '$http', '$rootScope', 'userServi
             });
     }
 }])
-
 app.controller('profileController', [function () {
 
 }])
-
 app.controller('myBlogController', [function () {
 
 }]);
@@ -256,3 +248,23 @@ app.controller('userController', ['$scope', '$http', function ($scope, $http) {
         console.log(err);
     })
 }]);
+app.controller('headController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+    $scope.logout = function () {
+        $http.get('http://localhost:3000/logout')
+            .then(function (data) {
+                $window.location.reload();
+            });
+    }
+
+    $http.get('http://localhost:3000/isLogged')
+        .then(function (data) {
+            if (data.data.length === 0) {
+                $scope.logged = false;
+                //$window.location.reload();
+            } else {
+                $scope.logged = true;
+                //$window.location.reload();
+
+            }
+        });
+}])
