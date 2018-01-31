@@ -1,0 +1,30 @@
+<div class="head"></div>
+<div ng-controller="singlePostController">
+    <div class="container">
+        <div class="row">
+            <div class="col col-lg-8">
+                <div class="blog">
+                    <!--{{post}}-->
+                    <img src="/img/uploads/{{post.imgs}}" alt="">
+                    <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
+                    <h5>{{getTime(post.time)}}</h5>
+                    <p>
+                        {{post.content}}
+                    </p>
+                </div>
+            </div>
+            <div class="col col-lg-4">
+                <div class="info">
+                    <h4>Comments:</h4>
+
+                    <h4>Leave your comment:</h4>
+                </div>
+                <div class="info" >
+                    <input type="text"  placeholder="comment">
+                    <button class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -23,6 +23,9 @@ app.config(function($routeProvider) {
     }).when('/newPost', {
         templateUrl: 'view/newPost.html',
         controller: 'newPostController'
+    }).when('/viewPost/:id',{
+        templateUrl: 'view/singlePost.html',
+        controller: 'singlePostController'
     }).when('/setting', {
         templateUrl: 'view/setting.html',
         controller: 'settingController'
@@ -61,9 +64,9 @@ app.factory('authService', ['$http', '$location', '$rootScope', '$q', function (
             });
         return deferred.promise;
     }
-    function Logged(username) {
+    function Logged(uid) {
         var deferred = $q.defer();
-        $http.post('http://localhost:3000/logged', {username: username})
+        $http.post('http://localhost:3000/logged', {uid: uid})
             .then(function (data) {
                 //alert(data.data.msg);
                 //$window.location.reload();
@@ -79,6 +82,7 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
     var service = {};
     service.Update = Update;
     service.GetByUsername = GetByUsername;
+    service.GetByUserId = GetByUserId;
     service.Create = Create;
     return service;
 
@@ -91,6 +95,14 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
         return deferred.promise;
     }
 
+    function GetByUserId(id) {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/getUserById/' + id)
+            .then(function(data) {
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
     function Update(user) {
         var deferred = $q.defer();
         $http.post('http://localhost:3000/updateUser',user)
@@ -115,12 +127,68 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
             })
         return deferred.promise;
     }
+}]);
+app.factory('postService', ['$rootScope', '$q', '$http', 'userService', function ($rootScope, $q, $http, userService) {
+    var service = {};
+    service.GetPostDetails = GetPostDetails;
+    service.GetPostByUserId = GetPostByUserId;
+    return service;
+
+    function GetPostDetails(id) {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/getPostById/' + id)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            })
+        return deferred.promise;
+    }
+    function GetPostByUserId(id) {
+        var deferred = $q.defer();
+        userService.GetByUserId(id)
+            .then(function (data) {
+                if (data != null) {
+                    $http.get('http://localhost:3000/getPostByUserId/' + id)
+                        .then(function (data) {
+                            deferred.resolve(data.data);
+                        })
+                }
+            });
+        return deferred.promise;
+    }
+
+
 }])
 app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
     if (localStorgae.getItem('logged') != null) {
         $scope.user = true;
     } else {
         $scope.user = false;
+    }
+}]);
+app.factory('timeService', [function () {
+    var service = {};
+    service.GetTime = GetTime;
+    return service;
+    function GetTime(time) {
+            var date = new Date(time);
+            var year = date.getFullYear();
+            var month = date.getDay();
+            var day = date.getDate();
+            var hours = date.getHours();
+            var minutes = date.getMinutes();
+            if (month < 10) {
+                month = '0' + month;
+            }
+            if (day < 10) {
+                day = '0' + hours;
+            }
+            if (hours < 10) {
+                hours = '0' + hours;
+            }
+            if (minutes < 10) {
+                minutes = '0' + minutes;
+            }
+            return year + '/' + month + '/' + day + '  ' + hours + ':' + minutes;
     }
 }])
 app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', '$window', 'authService', function ($location, $scope, $http, $rootScope, userService, $window, authService) {
@@ -135,7 +203,7 @@ app.controller('loginController', ['$location', '$scope', '$http', '$rootScope',
             .then(function (data) {
                 if (data.length != 0) {
                     if ($scope.password == data[0].password) {
-                        authService.Logged($scope.username)
+                        authService.Logged(data[0]._id)
                             .then(function (data) {
                                 alert(data.msg);
                                 $window.location.reload();
@@ -166,10 +234,12 @@ app.controller('settingController', ['$scope', '$http', '$location', '$rootScope
             if (data.length === 0) {
                 $location.path('/login');
             } else {
-                var username = data[0].username;
-                userService.GetByUsername(username)
+                var id = data[0].uid;
+                userService.GetByUserId(id)
                     .then(function (data) {
-                        $scope.user = data[0];
+                        //console.log(data);
+                        $scope.user = data;
+                        //console.log($scope.user);
                         var newPsd = localStorage.getItem('newPsd');
                         var newFirstname = localStorage.getItem('newFirstname');
                         var newLastname = localStorage.getItem('newLastname')
@@ -203,13 +273,22 @@ app.controller('profileController', ['authService', '$location', function (authS
             }
         });
 }])
-app.controller('myBlogController', ['authService', '$location', function (authService, $location) {
+app.controller('myBlogController', ['authService', '$location', '$scope', 'postService', 'timeService', function (authService, $location, $scope, postService, timeService) {
+    $scope.posts = [];
     authService.IsLoggedIn().
-    then(function (data) {
-        if (data.length === 0) {
-            $location.path('/login');
-        }
-    });
+        then(function (data) {
+            if (data.length === 0) {
+                $location.path('/login');
+            } else {
+                postService.GetPostByUserId(data[0].uid)
+                    .then(function (data) {
+                        $scope.posts = data;
+                    })
+            }
+        });
+    $scope.getTime = function (time) {
+        return timeService.GetTime(time);
+    }
 }]);
 app.controller('newPostController', ['$scope','$http', 'authService', 'userService','$location', function ($scope, $http, authService, userService, $location) {
     authService.IsLoggedIn()
@@ -217,14 +296,21 @@ app.controller('newPostController', ['$scope','$http', 'authService', 'userServi
             if (data.length === 0) {
                 $location.path('/login');
             } else {
-                var username = data[0].username;
-                userService.GetByUsername(username)
-                    .then(function (data) {
-                        $scope.action = "/newPost/"+data[0]._id;
-                    });
+                $scope.action = "/newPost/"+data[0].uid;
             }
         });
 }]);
+app.controller('singlePostController', ['$scope', '$routeParams', 'postService', 'timeService', function ($scope, $routeParams, postService, timeService) {
+    //$scope.post = $routeParams.id;
+    postService.GetPostDetails($routeParams.id)
+        .then(function (data) {
+            $scope.post = data;
+        });
+    $scope.getTime = function (time) {
+        return timeService.GetTime(time);
+    }
+
+}])
 app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location', 'authService', 'userService', function ($scope, $rootScope, $http, $location, authService, userService) {
     $scope.savePsd = function() {
         authService.IsLoggedIn()
@@ -232,10 +318,11 @@ app.controller('userPsdController', ['$scope', '$rootScope', '$http', '$location
                 if (data.length === 0) {
                     $location.path('/login');
                 } else {
-                    var username = data[0].username;
-                    userService.GetByUsername(username)
+                    var id = data[0].uid;
+                    userService.GetByUserId(id)
                         .then(function (data) {
-                            if ($scope.curPsd == data[0].password) {
+                            //console.log(data);
+                            if ($scope.curPsd == data.password) {
                                 localStorage.setItem('newPsd', $scope.newPsd);
                                 $location.path('/setting');
                             } else {
@@ -252,11 +339,11 @@ app.controller('userNameController', ['$scope', '$rootScope', '$http', '$locatio
             if (data.length === 0) {
                 $location.path('/login');
             } else {
-                var username = data[0].username;
-                userService.GetByUsername(username)
+                var id = data[0].uid;
+                userService.GetByUserId(id)
                     .then(function (data) {
-                        $scope.firstname = data[0].firstname;
-                        $scope.lastname = data[0].lastname;
+                        $scope.firstname = data.firstname;
+                        $scope.lastname = data.lastname;
                     });
             }
         });

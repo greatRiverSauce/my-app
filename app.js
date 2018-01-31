@@ -7,8 +7,8 @@ var express = require('express'),
     bodyParser = require('body-parser');
 
 var multer = require('multer');
-var upload = multer({dest:__dirname+'/uploads'});// image directory in the server
-
+var upload = multer({dest:__dirname+'/public/img/uploads'});// image directory in the server
+var ObjectId = require('mongoose').Types.ObjectId;
 mongoose.connect('mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao');
 
 
@@ -54,9 +54,9 @@ var ImgSchema = mongoose.Schema({
 });
 
 var PostSchema = mongoose.Schema({
-    'user': mongoose.Schema.ObjectId,
+    'user': String,
     'content': String,
-    'comments': [mongoose.Schema.ObjectId],
+    'comments': [String],
     'imgs': {
         type: String,
         required: true
@@ -70,7 +70,7 @@ var PostSchema = mongoose.Schema({
 });
 
 var LoggedSchema = mongoose.Schema({
-    'username':{
+    'uid':{
         type: String,
         required: true
     }
@@ -140,6 +140,19 @@ app.get('/getUserByUsername/:username', function (req, res) {
     });
 });
 
+app.get('/getUserById/:id', function (req, res) {
+    //var id = req.params.id;
+    var id = new ObjectId(req.params.id);
+    //console.log(id);
+    //5a6aa1bd0d1ac35c968c5da2
+    User.findById(id, function(err, doc){
+        if (!err) {
+            //console.log(doc);
+            res.send(doc);
+        }
+    });
+});
+
 app.post('/updateUser', function(req, res) {
     var query = {username: req.body.username};
     var newVal = {
@@ -163,6 +176,24 @@ app.post('/createUser', function (req, res) {
         }
     })
 
+})
+
+app.get('/getPostById/:pid', function (req, res) {
+    var id = new ObjectId(req.params.pid);
+    Post.findById(id, function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    })
+})
+
+app.get('/getPostByUserId/:id', function (req, res) {
+    var id = req.params.id;
+    Post.find({user: id}, function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    })
 })
 
 app.post('/logged', function (req, res) {
