@@ -32,6 +32,8 @@ app.config(function($routeProvider) {
     }).when('/setting/editName', {
         templateUrl: 'view/userName.html',
         controller: 'userNameController'
+    }).when('/test', {
+        templateUrl: 'view/test.html'
     });
 });
 

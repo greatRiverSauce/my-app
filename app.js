@@ -20,7 +20,7 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.listen(port, function() {
     console.log('Server running @localhost:3000');
-})
+});
 
 //define a schema
 var UserSchema = mongoose.Schema({
@@ -55,16 +55,13 @@ var ImgSchema = mongoose.Schema({
 
 var PostSchema = mongoose.Schema({
     'user': mongoose.Schema.ObjectId,
-    'title': {
-        type: String,
-        required: true
-    },
-    'content': {
-        type: String,
-        required: true
-    },
+    'content': String,
     'comments': [mongoose.Schema.ObjectId],
-    'imgs':[],
+    'imgs': {
+        type: String,
+        required: true
+    },
+    'likes': Number,
     'time': {
         type: Date,
         required: true
@@ -96,22 +93,29 @@ app.post('/newPost/:uid', upload.single('file'), function (req, res) {
     img.save(function (err) {
         if (!err) {
             var user = req.params.uid;
-            var title = req.body.title;
             var content = req.body.content;
             var comments = [];
-            var imgs = [];
-            imgs.push(fileName);
+            var imgs = fileName;
+            var likes = 0;
             var time = new Date();
+            
             var post = new Post({
                 user: user,
-                title: title,
                 content: content,
                 comments: comments,
                 imgs: imgs,
+                likes: likes,
                 time: time
             });
+            
+            console.log(post);
             post.save(function (err) {
-                res.redirect('/myBlog');
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.redirect('/myBlog');
+                }
+
             });
         }
     });
