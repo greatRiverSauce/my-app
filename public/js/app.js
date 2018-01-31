@@ -282,3 +282,11 @@ app.controller('headController', ['$scope', '$http', '$window', 'authService', f
             }
         });
 }])
+app.directive('head', function() {
+    return {
+        restrict: 'EAC',
+        transclude: true,
+        scope: {},
+        templateUrl: '/view/header.html'
+    };
+});

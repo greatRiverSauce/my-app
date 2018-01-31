@@ -9,7 +9,6 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" />
     <link rel="stylesheet" href = "http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <link rel="stylesheet" href="/css/style.css">
-    <!--<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>-->
 </head>
 
 <body ng-app="myapp" >
@@ -39,37 +38,37 @@
             <!--<h1>Hello traveller! <br>Special moments are never forgotten.</h1>-->
         <!--</div>-->
     <!--</header>-->
-    <header ng-controller="headController">
-        <nav class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/">My travel blog</a>
-                </div>
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav navbar-right mr-auto main-nav">
-                        <li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>
-                        <li class="dropdown">
-                            <a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&Lists <span class="caret"></span></a>
-                            <ul class="dropdown-menu main-nav">
-                                <li><a href="#/profile">Profile</a></li>
-                                <li><a href="#/setting">Setting</a></li>
-                                <li role="separator" class="divider"></li>
-                                <li><a href="#/myBlog">My Travel Blog</a></li>
-                                <li><a href="#/newPost">Write A Post</a></li>
-                                <li role="separator" ng-show="!logged" class="divider"></li>
-                                <!--<li class="nav-item"><a href="#/login">Login</a></li>-->
-                                <li class="nav-item" ng-show="!logged"><a href="#/register">Sign Up</a></li>
-                            </ul>
-                        </li>
+    <!--<header ng-controller="headController">-->
+        <!--<nav class="navbar navbar-default">-->
+            <!--<div class="container">-->
+                <!--<div class="navbar-header">-->
+                    <!--<a class="navbar-brand" href="/">My travel blog</a>-->
+                <!--</div>-->
+                <!--<div class="collapse navbar-collapse" id="navbarSupportedContent">-->
+                    <!--<ul class="nav navbar-nav navbar-right mr-auto main-nav">-->
+                        <!--<li class="nav-item"><a href="#/"><i class="fa fa-home"></i> Home</a></li>-->
+                        <!--<li class="dropdown">-->
+                            <!--<a href="" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Account&Lists <span class="caret"></span></a>-->
+                            <!--<ul class="dropdown-menu main-nav">-->
+                                <!--<li><a href="#/profile">Profile</a></li>-->
+                                <!--<li><a href="#/setting">Setting</a></li>-->
+                                <!--<li role="separator" class="divider"></li>-->
+                                <!--<li><a href="#/myBlog">My Travel Blog</a></li>-->
+                                <!--<li><a href="#/newPost">Write A Post</a></li>-->
+                                <!--<li role="separator" ng-show="!logged" class="divider"></li>-->
+                                <!--&lt;!&ndash;<li class="nav-item"><a href="#/login">Login</a></li>&ndash;&gt;-->
+                                <!--<li class="nav-item" ng-show="!logged"><a href="#/register">Sign Up</a></li>-->
+                            <!--</ul>-->
+                        <!--</li>-->
 
-                        <li class="nav-item" ng-show="!logged"><a href="#/login" ><i class="fa fa-comment"></i> Sign In</a></li>
-                        <li class="nav-item" ng-show="logged"><a href="" ng-click="logout()"><i class="fa fa-comment"></i> Sign Out</a></li>
-                    </ul>
-                </div>
+                        <!--<li class="nav-item" ng-show="!logged"><a href="#/login" ><i class="fa fa-comment"></i> Sign In</a></li>-->
+                        <!--<li class="nav-item" ng-show="logged"><a href="" ng-click="logout()"><i class="fa fa-comment"></i> Sign Out</a></li>-->
+                    <!--</ul>-->
+                <!--</div>-->
 
-            </div>
-        </nav>
-    </header>
+            <!--</div>-->
+        <!--</nav>-->
+    <!--</header>-->
 
     <div id="main">
 
@@ -107,9 +106,7 @@
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>-->
     <script src="http://localhost:3000/js/app.js"></script>
-    <!--<ng-view></ng-view>-->
 </body>
 
 </html>
