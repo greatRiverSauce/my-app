@@ -4,7 +4,6 @@
         <div class="row">
             <div class="col col-lg-8">
                 <div class="blog">
-                    <!--{{post}}-->
                     <img src="/img/uploads/{{post.imgs}}" alt="">
                     <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
                     <h5>{{getTime(post.time)}}</h5>
@@ -16,15 +15,19 @@
             <div class="col col-lg-4">
                 <div class="info">
                     <h4>Comments:</h4>
-
-                    <h4>Leave your comment:</h4>
+                    <ul ng-repeat="com in post.comments">
+                        <li>{{com.comment}} - {{com.username}}, {{getTime(com.time)}}</li>
+                    </ul>
                 </div>
                 <div class="info" >
-                    <input type="text"  placeholder="comment">
-                    <button class="btn btn-primary">Send</button>
+                    <h4>Leave your comment:</h4>
+                    <input type="text"  placeholder="comment" ng-model="comment.comment">
+                    <button class="btn btn-primary" ng-click="send()">Send</button>
                 </div>
+                <button class="btn btn-primary" ng-click="back()">Go back</button>
             </div>
         </div>
+
     </div>
 
 </div>

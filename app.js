@@ -56,7 +56,13 @@ var ImgSchema = mongoose.Schema({
 var PostSchema = mongoose.Schema({
     'user': String,
     'content': String,
-    'comments': [String],
+    'comments': [
+        {
+            'username': String,
+            'comment': String,
+            'time': Date
+        }
+    ],
     'imgs': {
         type: String,
         required: true
@@ -178,6 +184,16 @@ app.post('/createUser', function (req, res) {
 
 })
 
+app.get('/getPostSortByTime', function (req, res) {
+    //console.log('1');
+    Post.find({}).sort('-date').exec(function(err, docs) {
+        //console.log(docs);
+        if (!err) {
+            res.send(docs);
+        }
+    })
+})
+
 app.get('/getPostById/:pid', function (req, res) {
     var id = new ObjectId(req.params.pid);
     Post.findById(id, function (err, doc) {
@@ -185,7 +201,7 @@ app.get('/getPostById/:pid', function (req, res) {
             res.send(doc);
         }
     })
-})
+});
 
 app.get('/getPostByUserId/:id', function (req, res) {
     var id = req.params.id;
@@ -194,7 +210,15 @@ app.get('/getPostByUserId/:id', function (req, res) {
             res.send(doc);
         }
     })
-})
+});
+
+app.post('/updatePost', function(req, res) {
+    var query = {_id: req.body._id};
+    var newVal = req.body;
+    Post.update(query, newVal, {multi:true}, function (err, doc) {
+        res.send({'flg':'You successfully leave a comment!'});
+    })
+});
 
 app.post('/logged', function (req, res) {
     var newLogged = new Logged(req.body);
