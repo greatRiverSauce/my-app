@@ -116,7 +116,6 @@ app.post('/newPost/:uid', upload.single('file'), function (req, res) {
                 time: time
             });
             
-            //console.log(post);
             post.save(function (err) {
                 if (err) {
                     console.log(err);
@@ -140,7 +139,6 @@ app.get('/', function (req, res) {
 
 app.get('/getUserByUsername/:username', function (req, res) {
     var username = req.params.username;
-    //console.log(username);
     User.find({"username": username}, function(err, doc){
         if (!err) {
             res.send(doc);
@@ -151,11 +149,9 @@ app.get('/getUserByUsername/:username', function (req, res) {
 app.get('/getUserById/:id', function (req, res) {
     //var id = req.params.id;
     var id = new ObjectId(req.params.id);
-    //console.log(id);
-    //5a6aa1bd0d1ac35c968c5da2
+
     User.findById(id, function(err, doc){
         if (!err) {
-            //console.log(doc);
             res.send(doc);
         }
     });
@@ -168,7 +164,6 @@ app.post('/updateUser', function(req, res) {
         firstname: req.body.firstname,
         lastname: req.body.lastname
     }
-    console.log(query);
     User.update(query, newVal, {multi:true}, function (err, doc) {
         res.send({'flg':'success'});
     })
@@ -213,7 +208,6 @@ app.get('/getPostByUserId/:id', function (req, res) {
 });
 
 app.post('/updatePost', function(req, res) {
-    console.log(req.body._id);
     var query = {_id: req.body._id};
     var newVal = req.body;
     Post.update(query, newVal, {multi:true}, function (err, doc) {
@@ -230,9 +224,17 @@ app.post('/createComment', function (req, res) {
     });
 })
 
+app.get('/getComment/:cid', function (req, res) {
+    var id = new ObjectId(req.params.cid);
+    Comment.findById(id, function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    })
+})
+
 app.post('/logged', function (req, res) {
     var newLogged = new Logged(req.body);
-    //console.log(req.body);
     newLogged.save(function (err) {
         if (!err) {
             res.send({'msg':'successfully logged in'});

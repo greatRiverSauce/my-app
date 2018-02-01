@@ -181,7 +181,7 @@ app.factory('postService', ['$rootScope', '$q', '$http', 'userService', function
 app.factory('commentService', ['$http', '$q', function ($http, $q) {
     var service = {};
     service.CreateComment = CreateComment;
-
+    service.GetCommentById = GetCommentById;
     return service;
 
     function CreateComment(comment) {
@@ -190,6 +190,15 @@ app.factory('commentService', ['$http', '$q', function ($http, $q) {
             .then(function (data) {
                 deferred.resolve(data.data);
             })
+        return deferred.promise;
+    }
+
+    function GetCommentById(id) {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/getComment/' + id)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            });
         return deferred.promise;
     }
     
@@ -363,48 +372,58 @@ app.controller('newPostController', ['$scope','$http', 'authService', 'userServi
             }
         });
 }]);
-app.controller('singlePostController', ['$scope', '$routeParams', '$location','postService', 'timeService', 'authService', 'userService', 'commentService',function ($scope, $routeParams, $location, postService, timeService, authService, userService, commentService) {
+app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$location','postService', 'timeService', 'authService', 'userService', 'commentService',function ($http, $scope, $routeParams, $location, postService, timeService, authService, userService, commentService) {
     var curUser;
+
+    $scope.allComments = [];
     postService.GetPostDetails($routeParams.id)
         .then(function (data) {
             $scope.post = data;
+            var commentsId = $scope.post.comments;
+            //var comments = [];
+            angular.forEach(commentsId, function (value, index) {
+                commentService.GetCommentById(value)
+                    .then(function (data) {
+                        $scope.allComments.push(data);
+                        //$scope.allComments = comments;
+                    });
+            });
+            //$scope.allComments = comments;
         });
+
     authService.IsLoggedIn()
         .then(function (data) {
             var uid = data[0].uid;
             userService.GetByUserId(uid)
                 .then(function (data) {
                     curUser = data;
-
                 });
         })
     $scope.getTime = function (time) {
         return timeService.GetTime(time);
     }
-    // 'username': String,
-    //     'postId': String,
-    //     'content': String,
-    //     'time':Date
 
     $scope.send = function () {
         $scope.comment.username =curUser.username;
         $scope.comment.postId = $scope.post._id;
         $scope.comment.time = new Date();
+        //console.log($scope.comment);
         commentService.CreateComment($scope.comment)
             .then(function (data) {
                 //console.log(data._id);
                 $scope.post.comments.push(data._id);
-                console.log($scope.post);
+                $scope.allComments.push(data);
+                //console.log($scope.post);
                 postService.UpdatePost($scope.post)
                     .then(function (data) {
                         if (data) {
                             alert("New comment created!");
                         }
                     });
-            })
-        // $scope.post.comments.push($scope.comment);
-
+            });
     }
+
+
     $scope.back = function() {
         $location.path('/home');
     }
