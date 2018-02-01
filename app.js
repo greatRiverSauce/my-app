@@ -56,13 +56,7 @@ var ImgSchema = mongoose.Schema({
 var PostSchema = mongoose.Schema({
     'user': String,
     'content': String,
-    'comments': [
-        {
-            'username': String,
-            'comment': String,
-            'time': Date
-        }
-    ],
+    'comments': [String],
     'imgs': {
         type: String,
         required: true
@@ -75,6 +69,13 @@ var PostSchema = mongoose.Schema({
 
 });
 
+var CommentSchema = mongoose.Schema({
+    'username': String,
+    'postId': String,
+    'content': String,
+    'time':Date
+});
+
 var LoggedSchema = mongoose.Schema({
     'uid':{
         type: String,
@@ -84,6 +85,7 @@ var LoggedSchema = mongoose.Schema({
 //create a model
 var User = mongoose.model('users', UserSchema);
 var Post = mongoose.model('posts',PostSchema);
+var Comment = mongoose.model('comments', CommentSchema);
 var Img = mongoose.model('images',ImgSchema);
 var Logged = mongoose.model('loggeds', LoggedSchema);
 
@@ -114,7 +116,7 @@ app.post('/newPost/:uid', upload.single('file'), function (req, res) {
                 time: time
             });
             
-            console.log(post);
+            //console.log(post);
             post.save(function (err) {
                 if (err) {
                     console.log(err);
@@ -185,9 +187,7 @@ app.post('/createUser', function (req, res) {
 })
 
 app.get('/getPostSortByTime', function (req, res) {
-    //console.log('1');
     Post.find({}).sort('-date').exec(function(err, docs) {
-        //console.log(docs);
         if (!err) {
             res.send(docs);
         }
@@ -213,12 +213,22 @@ app.get('/getPostByUserId/:id', function (req, res) {
 });
 
 app.post('/updatePost', function(req, res) {
+    console.log(req.body._id);
     var query = {_id: req.body._id};
     var newVal = req.body;
     Post.update(query, newVal, {multi:true}, function (err, doc) {
-        res.send({'flg':'You successfully leave a comment!'});
+        res.send({'success':true});
     })
 });
+
+app.post('/createComment', function (req, res) {
+    var newComment = new Comment(req.body);
+    newComment.save(function(err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    });
+})
 
 app.post('/logged', function (req, res) {
     var newLogged = new Logged(req.body);

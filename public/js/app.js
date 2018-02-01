@@ -171,12 +171,28 @@ app.factory('postService', ['$rootScope', '$q', '$http', 'userService', function
         var deferred = $q.defer();
         $http.post('http://localhost:3000/updatePost',post)
             .then(function(data) {
-                deferred.resolve(data.data.flg);
+                deferred.resolve(data.data.success);
             });
         return deferred.promise;
     }
 
 
+}]);
+app.factory('commentService', ['$http', '$q', function ($http, $q) {
+    var service = {};
+    service.CreateComment = CreateComment;
+
+    return service;
+
+    function CreateComment(comment) {
+        var deferred = $q.defer();
+        $http.post('http://localhost:3000/createComment', comment)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            })
+        return deferred.promise;
+    }
+    
 }])
 app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
     if (localStorgae.getItem('logged') != null) {
@@ -347,7 +363,7 @@ app.controller('newPostController', ['$scope','$http', 'authService', 'userServi
             }
         });
 }]);
-app.controller('singlePostController', ['$scope', '$routeParams', '$location','postService', 'timeService', 'authService', 'userService', function ($scope, $routeParams, $location, postService, timeService, authService, userService) {
+app.controller('singlePostController', ['$scope', '$routeParams', '$location','postService', 'timeService', 'authService', 'userService', 'commentService',function ($scope, $routeParams, $location, postService, timeService, authService, userService, commentService) {
     var curUser;
     postService.GetPostDetails($routeParams.id)
         .then(function (data) {
@@ -365,14 +381,29 @@ app.controller('singlePostController', ['$scope', '$routeParams', '$location','p
     $scope.getTime = function (time) {
         return timeService.GetTime(time);
     }
+    // 'username': String,
+    //     'postId': String,
+    //     'content': String,
+    //     'time':Date
+
     $scope.send = function () {
         $scope.comment.username =curUser.username;
+        $scope.comment.postId = $scope.post._id;
         $scope.comment.time = new Date();
-        $scope.post.comments.push($scope.comment);
-        postService.UpdatePost($scope.post)
+        commentService.CreateComment($scope.comment)
             .then(function (data) {
-                alert(data);
-            });
+                //console.log(data._id);
+                $scope.post.comments.push(data._id);
+                console.log($scope.post);
+                postService.UpdatePost($scope.post)
+                    .then(function (data) {
+                        if (data) {
+                            alert("New comment created!");
+                        }
+                    });
+            })
+        // $scope.post.comments.push($scope.comment);
+
     }
     $scope.back = function() {
         $location.path('/home');
