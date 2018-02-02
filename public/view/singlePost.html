@@ -5,7 +5,10 @@
             <div class="col col-lg-8">
                 <div class="blog">
                     <img src="/img/uploads/{{post.imgs}}" alt="">
-                    <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
+                    <span class="cnt">{{post.likes.length}}</span>&nbsp;
+                    <i post="post0" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post0.likes.indexOf(uid) !== -1]">
+
+                    </i>
                     <h5>{{getTime(post.time)}}</h5>
                     <p>
                         {{post.content}}

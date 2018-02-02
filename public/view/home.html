@@ -6,7 +6,7 @@
             <div class="row post"  ng-repeat="post0 in post0">
                 <div ng-click="viewDetail(post0._id); $event.stopImmediatePropagation();">
                     <img src="/img/uploads/{{post0.imgs}}" alt="">
-                    <span class="cnt">{{post.likes}}</span>&nbsp;
+                    <span class="cnt">{{post0.likes.length}}</span>&nbsp;
                     <!--class="ion-ios-heart-outline likeIt"-->
                     <i post="post0" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post0.likes.indexOf(uid) !== -1]">
 

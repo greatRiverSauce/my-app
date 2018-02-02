@@ -424,7 +424,10 @@ app.controller('newPostController', ['$scope','$http', 'authService', 'userServi
 }]);
 app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$location','postService', 'timeService', 'authService', 'userService', 'commentService',function ($http, $scope, $routeParams, $location, postService, timeService, authService, userService, commentService) {
     var curUser;
-
+    authService.IsLoggedIn()
+        .then(function (data) {
+            $scope.uid = data[0].uid;
+        });
     $scope.allComments = [];
     postService.GetPostDetails($routeParams.id)
         .then(function (data) {
@@ -586,7 +589,8 @@ app.directive("likeIt", ['authService', 'likeService', 'postService', function(a
 
                                         
                                     } else {
-                                        likeService.RemoveLike(scope.postId, uid)
+                                        console.log(data);
+                                        likeService.RemoveLike(scope.post._id, uid)
                                             .then(function (data) {
                                                 var pos = scope.post.likes.indexOf(uid);
                                                 scope.post.likes.splice(pos, 1);
