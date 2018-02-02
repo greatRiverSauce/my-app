@@ -61,7 +61,7 @@ var PostSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    'likes': Number,
+    'likes': [String],
     'time': {
         type: Date,
         required: true
@@ -76,6 +76,12 @@ var CommentSchema = mongoose.Schema({
     'time':Date
 });
 
+var LikeSchema = mongoose.Schema({
+    'userId': String,
+    'postId': String,
+    'time':Date
+});
+
 var LoggedSchema = mongoose.Schema({
     'uid':{
         type: String,
@@ -87,6 +93,7 @@ var User = mongoose.model('users', UserSchema);
 var Post = mongoose.model('posts',PostSchema);
 var Comment = mongoose.model('comments', CommentSchema);
 var Img = mongoose.model('images',ImgSchema);
+var Like = mongoose.model('likes', LikeSchema);
 var Logged = mongoose.model('loggeds', LoggedSchema);
 
 app.post('/newPost/:uid', upload.single('file'), function (req, res) {
@@ -104,7 +111,7 @@ app.post('/newPost/:uid', upload.single('file'), function (req, res) {
             var content = req.body.content;
             var comments = [];
             var imgs = fileName;
-            var likes = 0;
+            var likes = [];
             var time = new Date();
             
             var post = new Post({
@@ -182,7 +189,7 @@ app.post('/createUser', function (req, res) {
 })
 
 app.get('/getPostSortByTime', function (req, res) {
-    Post.find({}).sort('-date').exec(function(err, docs) {
+    Post.find({}).sort('-time').exec(function(err, docs) {
         if (!err) {
             res.send(docs);
         }
@@ -221,6 +228,32 @@ app.post('/createComment', function (req, res) {
         if (!err) {
             res.send(doc);
         }
+    });
+})
+
+app.post('/createLike', function (req, res) {
+    var newLike = new Like(req.body);
+    newLike.save(function (err, doc) {
+        if (!err) {
+            res.send({'msg': 'You liked it! '});
+        }
+    })
+})
+
+app.get('/isLiked/:uid', function (req, res) {
+    var uid = req.params.uid;
+    Like.find({"userId": uid}, function(err, doc){
+        if (!err) {
+            res.send(doc);
+        }
+    });
+});
+
+app.post('/deleteLike', function (req, res) {
+    var pid = req.body.pid;
+    var uid = req.body.uid;
+    Like.find({ "userId":uid, "postId": pid}).remove().exec(function(err, docs) {
+        res.send({"msg": "You unliked it!"});
     });
 })
 

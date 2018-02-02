@@ -202,6 +202,37 @@ app.factory('commentService', ['$http', '$q', function ($http, $q) {
         return deferred.promise;
     }
     
+}]);
+app.factory('likeService', ['$http', '$q', function ($http, $q) {
+    var service = {};
+    service.CreateLike = CreateLike;
+    service.IsLiked = IsLiked;
+    service.RemoveLike = RemoveLike;
+    return service;
+    function CreateLike(like) {
+        var deferred = $q.defer();
+        $http.post('http://localhost:3000/createLike', like)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
+    function IsLiked(uid) {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/isLiked/'+ uid)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            })
+        return deferred.promise;
+    }
+    function RemoveLike(postId, userId){
+        var deferred = $q.defer();
+        $http.post('http://localhost:3000/deleteLike', {pid: postId, uid: userId})
+            .then(function (data) {
+                deferred.resolve(data.data);
+            })
+        return deferred.promise;
+    }
 }])
 app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
     if (localStorgae.getItem('logged') != null) {
@@ -273,7 +304,11 @@ app.controller('registerController', ['$location', '$scope', '$http', 'userServi
             });
     }
 }]);
-app.controller('homeController', ['$scope', 'postService', function ($scope, postService) {
+app.controller('homeController', ['$scope', 'postService', '$location', 'likeService', 'authService', function ($scope, postService, $location, likeService, authService) {
+    authService.IsLoggedIn()
+        .then(function (data) {
+            $scope.uid = data[0].uid;
+        });
     postService.GetAllPostsSortByTime()
         .then(function (data) {
             $scope.post0 = [];
@@ -281,22 +316,37 @@ app.controller('homeController', ['$scope', 'postService', function ($scope, pos
             $scope.post2 = [];
             var len = data.length;
             for (var i = 0; i < len; i++) {
-                if (i/3 === 0) {
+                if (i%3 === 0) {
                     $scope.post0.push(data[i]);
-                } else if (i/3 === 1) {
+                } else if (i%3 === 1) {
                     $scope.post1.push(data[i]);
-                } else {
+                } else if (i%3 === 2){
                     $scope.post2.push(data[i]);
                 }
             }
-            //console.log($scope.post0[0].imgs);
         });
-    $scope.viewDetails = function () {
-
+    $scope.like = function () {
         console.log('1');
-        //$location('#/viewPost/' + pid);
     }
-}])
+    $scope.viewDetail = function (id) {
+        $location.path('/viewPost/' + id);
+    }
+    //$scope.uid = "123";
+    // $scope.likes = function (likes) {
+    //     authService.IsLoggedIn()
+    //         .then(function (data) {
+    //             var uid = data[0].uid;
+    //
+    //             var flg = likes.indexOf("uid");
+    //             if (flg === -1) {
+    //                 return false;
+    //             } else {
+    //                 return true;
+    //             }
+    //         });
+    //
+    // }
+}]);
 app.controller('settingController', ['$scope', '$http', '$location', '$rootScope', 'userService', 'authService', '$routeParams', function ($scope, $http, $rootScope, $location, userService, authService, $routeParams) {
     authService.IsLoggedIn()
         .then(function (data) {
@@ -497,3 +547,64 @@ app.directive('head', function() {
         templateUrl: '/view/header.html'
     };
 });
+app.directive("likeIt", ['authService', 'likeService', 'postService', function(authService, likeService, postService) {
+    return {
+        restrict:'EAC', //element, attribute, class
+        scope: {
+            post: '='
+        },
+        link:function(scope, elem, attrs) {
+            scope.like = true;
+            var address = angular.element(elem);
+            address.on('click', function() {
+                event.stopImmediatePropagation();
+                authService.IsLoggedIn()
+                    .then(function (data) {
+                        if (data.length === 0) {
+                            alert('Please login!');
+                        } else {
+                            var uid = data[0].uid;
+                            likeService.IsLiked(uid)
+                                .then(function (data) {
+                                    //console.log(data);
+                                    if (data == "") {
+                                        var like = {};
+                                        like.userId = uid;
+                                        like.postId = scope.post._id;
+                                        like.time = new Date();
+                                        likeService.CreateLike(like)
+                                            .then(function(data) {
+                                                scope.post.likes.push(uid);
+                                                postService.UpdatePost(scope.post)
+                                                    .then(function (data) {
+
+                                                    })
+                                                alert(data.msg);
+                                            });
+                                        address.removeClass("ion-ios-heart-outline");
+                                        address.addClass("ion-ios-heart");
+
+                                        
+                                    } else {
+                                        likeService.RemoveLike(scope.postId, uid)
+                                            .then(function (data) {
+                                                var pos = scope.post.likes.indexOf(uid);
+                                                scope.post.likes.splice(pos, 1);
+                                                postService.UpdatePost(scope.post)
+                                                    .then(function (data) {
+
+                                                    });
+                                                alert(data.msg);
+                                            });
+                                        address.removeClass("ion-ios-heart");
+                                        address.addClass("ion-ios-heart-outline");
+
+                                    }
+                                });
+                            
+                        }
+                    });
+            });
+        }
+    };
+}]);

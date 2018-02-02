@@ -1,21 +1,28 @@
 <div class="head"></div>
+<!--<i class="ion-ios-heart-outline likeIt">11</i>-->
 <div class="container" ng-controller="homeController">
     <div class="row" >
-        <div class="col col-lg-4" ng-repeat="post0 in post0">
-            <a href="#/viewPost/{{post0._id}}">
-                <div class="post">
+        <div class="col col-lg-4">
+            <div class="row post"  ng-repeat="post0 in post0">
+                <div ng-click="viewDetail(post0._id); $event.stopImmediatePropagation();">
                     <img src="/img/uploads/{{post0.imgs}}" alt="">
-                    <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
+                    <span class="cnt">{{post.likes}}</span>&nbsp;
+                    <!--class="ion-ios-heart-outline likeIt"-->
+                    <i post="post0" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post0.likes.indexOf(uid) !== -1]">
+
+                    </i>
+
                     <h5>{{getTime(post.time)}}</h5>
                     <p>
                         {{post.content}}
                     </p>
                 </div>
-            </a>
+            </div>
+
         </div>
-        <div class="col col-lg-4" ng-repeat="post1 in post1">
-            <a href="#/viewPost/{{post1._id}}">
-                <div class="post" >
+        <div class="col col-lg-4" >
+            <div class="row post" ng-repeat="post1 in post1">
+                <div ng-click="viewDetail(post1._id); $event.stopImmediatePropagation();">
                     <img src="/img/uploads/{{post1.imgs}}" alt="">
                     <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
                     <h5>{{getTime(post.time)}}</h5>
@@ -23,19 +30,25 @@
                         {{post.content}}
                     </p>
                 </div>
-            </a>
+            </div>
         </div>
-        <div class="col col-lg-4" ng-repeat="post2 in post2">
-            <a href="#/viewPost/{{post2._id}}">
-                <div class="post">
+        <div class="col col-lg-4" >
+            <div class="row post" ng-repeat="post2 in post2">
+                <div ng-click="viewDetail(post2._id); $event.stopImmediatePropagation();">
                     <img src="/img/uploads/{{post2.imgs}}" alt="">
-                    <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
+                    <a class="like" href="">
+                        <span class="cnt">{{post.likes}}</span>
+                        &nbsp;
+                        <i class="ion-ios-heart-outline">
+                        </i>
+                    </a>
                     <h5>{{getTime(post.time)}}</h5>
                     <p>
                         {{post.content}}
                     </p>
                 </div>
-            </a>
+            </div>
+
         </div>
     </div>
 </div>
