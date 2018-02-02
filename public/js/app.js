@@ -307,7 +307,9 @@ app.controller('registerController', ['$location', '$scope', '$http', 'userServi
 app.controller('homeController', ['$scope', 'postService', '$location', 'likeService', 'authService', function ($scope, postService, $location, likeService, authService) {
     authService.IsLoggedIn()
         .then(function (data) {
-            $scope.uid = data[0].uid;
+            if (data.length != 0) {
+                $scope.uid = data[0].uid;
+            }
         });
     postService.GetAllPostsSortByTime()
         .then(function (data) {
@@ -424,10 +426,6 @@ app.controller('newPostController', ['$scope','$http', 'authService', 'userServi
 }]);
 app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$location','postService', 'timeService', 'authService', 'userService', 'commentService',function ($http, $scope, $routeParams, $location, postService, timeService, authService, userService, commentService) {
     var curUser;
-    authService.IsLoggedIn()
-        .then(function (data) {
-            $scope.uid = data[0].uid;
-        });
     $scope.allComments = [];
     postService.GetPostDetails($routeParams.id)
         .then(function (data) {
@@ -446,34 +444,41 @@ app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$loc
 
     authService.IsLoggedIn()
         .then(function (data) {
-            var uid = data[0].uid;
-            userService.GetByUserId(uid)
-                .then(function (data) {
-                    curUser = data;
-                });
+            if (data.length != 0) {
+                $scope.uid = data[0].uid;
+                var id = data[0].uid;
+                userService.GetByUserId(id)
+                    .then(function (data) {
+                        curUser = data;
+                    });
+            }
         })
     $scope.getTime = function (time) {
         return timeService.GetTime(time);
     }
 
     $scope.send = function () {
-        $scope.comment.username =curUser.username;
-        $scope.comment.postId = $scope.post._id;
-        $scope.comment.time = new Date();
-        //console.log($scope.comment);
-        commentService.CreateComment($scope.comment)
-            .then(function (data) {
-                //console.log(data._id);
-                $scope.post.comments.push(data._id);
-                $scope.allComments.push(data);
-                //console.log($scope.post);
-                postService.UpdatePost($scope.post)
-                    .then(function (data) {
-                        if (data) {
-                            alert("New comment created!");
-                        }
-                    });
-            });
+        if (curUser == null) {
+            alert("Please login in ");
+        } else {
+            $scope.comment.username =curUser.username;
+            $scope.comment.postId = $scope.post._id;
+            $scope.comment.time = new Date();
+            //console.log($scope.comment);
+            commentService.CreateComment($scope.comment)
+                .then(function (data) {
+                    //console.log(data._id);
+                    $scope.post.comments.push(data._id);
+                    $scope.allComments.push(data);
+                    //console.log($scope.post);
+                    postService.UpdatePost($scope.post)
+                        .then(function (data) {
+                            if (data) {
+                                alert("New comment created!");
+                            }
+                        });
+                });
+        }
     }
 
 
