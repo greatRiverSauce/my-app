@@ -4,18 +4,24 @@
         <div class="row">
             <div class="col col-lg-8">
                 <div class="blog">
-                    <img src="/img/uploads/{{post.imgs}}" alt="">
-                    <span class="cnt">{{post.likes.length}}</span>&nbsp;
-                    <i post="post0" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post0.likes.indexOf(uid) !== -1]">
+                    <div style="float: right">
+                        <span class="cnt">{{post.likes.length}}</span>&nbsp;
+                        <i post="post" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post.likes.indexOf(uid) !== -1]">
+                        </i>
+                    </div>
 
-                    </i>
-                    <h5>{{getTime(post.time)}}</h5>
-                    <p>
-                        {{post.content}}
-                    </p>
+                    <img src="/img/uploads/{{post.imgs}}" alt="">
+
                 </div>
             </div>
             <div class="col col-lg-4">
+                <div class="info">
+                    <a href="#/viewProfile/{{author._id}}"><h4>@{{author.username}}</h4></a>
+                    <p>
+                        {{post.content}}
+                    </p>
+                    <p>{{getTime(post.time)}}</p>
+                </div>
                 <div class="info">
                     <h4>Comments:</h4>
                     <ul ng-repeat="com in allComments">

@@ -5,6 +5,8 @@
   "main": "app.js",
   "dependencies": {
     "@uirouter/angularjs": "^1.0.13",
+    "angular-ui-bootstrap": "^2.5.6",
+    "angularjs-datetime-picker": "^0.1.16",
     "express": "^4.16.2",
     "mongodb": "^3.0.1",
     "mongoose": "^5.0.2",

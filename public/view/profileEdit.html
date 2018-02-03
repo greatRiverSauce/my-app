@@ -1,0 +1,55 @@
+<div class="head"></div>
+<div ng-controller="profileEditController" style="width: 800px;margin:auto;margin-top: 50px">
+    <div class="row">
+        <legend>User profile </legend>
+        <div class="col-md-8 ">
+            <form class="form-horizontal" method="post" enctype="multipart/form-data" action={{action}}>
+
+                <div class="form-group">
+                    <label>Username:</label>
+                    <input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username">
+                </div>
+                <div class="form-group">
+                    <label for="location">Location</label>
+                    <input type="text" class="form-control" id="location" placeholder="location" ng-model="userProfile.location">
+                </div>
+                <div class="form-group">
+                    <label for="birth">Birth</label>
+                    <input type="text" class="form-control" id="birth" placeholder="yy/mm/dd" ng-model="userProfile.birth">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email" ng-model="userProfile.email">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="phone number" ng-model="userProfile.phone">
+                </div>
+                <div class="form-group">
+                    <label for="bio">Bio</label>
+                    <textarea class="form-control" id="bio" placeholder="bio" ng-model="userProfile.bio">
+                </div>
+                <!--<div class="radio">-->
+                    <!--<label>-->
+                        <!--<input type="radio" name="optionsRadios" id="male" value="male" checked>-->
+                        <!--Male-->
+                    <!--</label>-->
+                <!--</div>-->
+                <!--<div class="radio">-->
+                    <!--<label>-->
+                        <!--<input type="radio" name="optionsRadios" id="female" value="female">-->
+                        <!--Female-->
+                    <!--</label>-->
+                <!--</div>-->
+
+                <button type="submit" class="btn btn-default">Submit</button>
+
+            </form>
+        </div>
+        <div class="col-md-4">
+            <img src="http://websamplenow.com/30/userprofile/images/avatar.jpg" class="img-responsive img-thumbnail ">
+        </div>
+    </div>
+
+</div>
+</div>

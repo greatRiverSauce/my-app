@@ -121,7 +121,11 @@ header #visiter{
 .info .title {
     margin-top: -25px;
 }
-.info img,
+.info img {
+    width:200px;
+    height: 200px;
+    border-radius: 50%;
+}
 .post img {
     width: 100%;
 }
@@ -229,6 +233,18 @@ footer p {
     text-align: center;
     font-size: 90%;
     margin-top: 20px;
+}
+
+
+.full button span {
+    background-color: limegreen;
+    border-radius: 32px;
+    color: black;
+}
+.partially button span {
+    background-color: orange;
+    border-radius: 32px;
+    color: black;
 }
 
 

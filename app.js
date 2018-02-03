@@ -42,6 +42,20 @@ var UserSchema = mongoose.Schema({
     }
 });
 
+var ProfileSchema = mongoose.Schema({
+    'userId': {
+        type: String,
+        required: true
+    },
+    'photo': String,
+    'birth': Date,
+    'gender': String,
+    'bio':String,
+    'email': String,
+    'phone': String,
+    'location':String
+});
+
 var ImgSchema = mongoose.Schema({
     'fileName': {
         type: String,
@@ -90,6 +104,7 @@ var LoggedSchema = mongoose.Schema({
 });
 //create a model
 var User = mongoose.model('users', UserSchema);
+var Profile = mongoose.model('profiles', ProfileSchema);
 var Post = mongoose.model('posts',PostSchema);
 var Comment = mongoose.model('comments', CommentSchema);
 var Img = mongoose.model('images',ImgSchema);
@@ -156,7 +171,6 @@ app.get('/getUserByUsername/:username', function (req, res) {
 app.get('/getUserById/:id', function (req, res) {
     //var id = req.params.id;
     var id = new ObjectId(req.params.id);
-
     User.findById(id, function(err, doc){
         if (!err) {
             res.send(doc);
@@ -178,14 +192,30 @@ app.post('/updateUser', function(req, res) {
 
 app.post('/createUser', function (req, res) {
     var newUser = new User(req.body);
-    newUser.save(function (err) {
-        if (err) {
-            res.send({'msg': 'This username has been used, please change another one'});
-        } else {
-            res.send({'msg': 'Congratualations! Your account have been successfully created'});
+    newUser.save(function (err, doc) {
+        if (!err) {
+            res.send(doc);
         }
     })
 
+});
+
+app.post('/createProfile', function (req, res) {
+    var newProfile = new Profile(req.body);
+    newProfile.save(function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    })
+});
+
+app.get('/findProfile/:uid', function (req, res) {
+    var uid = req.params.uid;
+    Profile.find({"userId": uid}, function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    })
 })
 
 app.get('/getPostSortByTime', function (req, res) {

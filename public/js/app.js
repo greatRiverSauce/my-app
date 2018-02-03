@@ -1,7 +1,7 @@
 /**
  * Created by Christine on 2018/1/24.
  */
-var app = angular.module('myapp', ["ngRoute"]);
+var app = angular.module('myapp', ['ngRoute']);
 
 app.config(function($routeProvider) {
     $routeProvider.when('/', {
@@ -16,7 +16,10 @@ app.config(function($routeProvider) {
         templateUrl:'view/home.html',
         controller: 'homeController'
     }).when('/profile', {
-        templateUrl:'view/profile.html',
+        templateUrl:'view/profileEdit.html',
+        controller: 'profileEditController'
+    }).when('/viewProfile/:uid', {
+        templateUrl: 'view/profile.html',
         controller: 'profileController'
     }).when('/myBlog', {
         templateUrl: 'view/myBlog.html',
@@ -122,13 +125,36 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
                 } else {
                     $http.post('http://localhost:3000/createUser', user)
                         .then(function (data) {
-                            deferred.resolve({success: true, message: data.data.msg});
+                            deferred.resolve(data.data);
                         });
                 }
             })
         return deferred.promise;
     }
 }]);
+app.factory('profileService',['$http', '$q', function ($http, $q) {
+    var service = {};
+    service.CreateProfile = CreateProfile;
+    service.FindProfileByUserId = FindProfileByUserId;
+    return service;
+
+    function CreateProfile(profile) {
+        var deferred = $q.defer();
+        $http.post('http://localhost:3000/createProfile', profile)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
+    function FindProfileByUserId(id) {
+        var deferred = $q.defer();
+        $http.get('http://localhost:3000/findProfile/'+ id)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
+}])
 app.factory('postService', ['$rootScope', '$q', '$http', 'userService', function ($rootScope, $q, $http, userService) {
     var service = {};
     service.GetAllPostsSortByTime = GetAllPostsSortByTime;
@@ -234,13 +260,6 @@ app.factory('likeService', ['$http', '$q', function ($http, $q) {
         return deferred.promise;
     }
 }])
-app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
-    if (localStorgae.getItem('logged') != null) {
-        $scope.user = true;
-    } else {
-        $scope.user = false;
-    }
-}]);
 app.factory('timeService', [function () {
     var service = {};
     service.GetTime = GetTime;
@@ -266,7 +285,14 @@ app.factory('timeService', [function () {
             }
             return year + '/' + month + '/' + day + '  ' + hours + ':' + minutes;
     }
-}])
+}]);
+app.controller('headerController', ['$scope', '$rootScope', function ($scope, $rootScope) {
+    if (localStorgae.getItem('logged') != null) {
+        $scope.user = true;
+    } else {
+        $scope.user = false;
+    }
+}]);
 app.controller('loginController', ['$location', '$scope', '$http', '$rootScope', 'userService', '$window', 'authService', function ($location, $scope, $http, $rootScope, userService, $window, authService) {
     authService.IsLoggedIn()
         .then(function (data) {
@@ -293,14 +319,33 @@ app.controller('loginController', ['$location', '$scope', '$http', '$rootScope',
             });
     }
 }]);
-app.controller('registerController', ['$location', '$scope', '$http', 'userService', function ($location, $scope, $http, userService) {
+app.controller('registerController', ['$location', '$scope', '$http', 'userService', 'profileService', function ($location, $scope, $http, userService, profileService) {
     $scope.register = function () {
         userService.Create($scope.user)
             .then(function (data) {
-                alert(data.message);
-                if (data.success) {
-                    $location.path('/login');
+                if (data !== null) {
+                    var profile = {};
+                    profile.userId = data._id;
+                    profile.photo = "";
+                    profile.birth = "";
+                    profile.bio = "";
+                    profile.gender = "";
+                    profile.email = "";
+                    profile.phone = "";
+                    profileService.CreateProfile(profile)
+                        .then(function (data) {
+                            if (data !== null) {
+                                alert('You have successfully registered!');
+                                $location.path('/login');
+                            } else {
+                                alert('err');
+                            }
+                        })
+
+                } else {
+                    alert('err');
                 }
+
             });
     }
 }]);
@@ -327,27 +372,9 @@ app.controller('homeController', ['$scope', 'postService', '$location', 'likeSer
                 }
             }
         });
-    $scope.like = function () {
-        console.log('1');
-    }
     $scope.viewDetail = function (id) {
         $location.path('/viewPost/' + id);
     }
-    //$scope.uid = "123";
-    // $scope.likes = function (likes) {
-    //     authService.IsLoggedIn()
-    //         .then(function (data) {
-    //             var uid = data[0].uid;
-    //
-    //             var flg = likes.indexOf("uid");
-    //             if (flg === -1) {
-    //                 return false;
-    //             } else {
-    //                 return true;
-    //             }
-    //         });
-    //
-    // }
 }]);
 app.controller('settingController', ['$scope', '$http', '$location', '$rootScope', 'userService', 'authService', '$routeParams', function ($scope, $http, $rootScope, $location, userService, authService, $routeParams) {
     authService.IsLoggedIn()
@@ -386,21 +413,46 @@ app.controller('settingController', ['$scope', '$http', '$location', '$rootScope
             });
     }
 }])
-app.controller('profileController', ['authService', '$location', function (authService, $location) {
-    authService.IsLoggedIn().
-        then(function (data) {
-            if (data.length === 0) {
-                $location.path('/login');
-            }
+app.controller('profileController', ['authService', 'userService', '$location', '$routeParams','$scope', 'profileService', function (authService, userService, $location, $routeParams, $scope, profileService) {
+    userService.GetByUserId($routeParams.uid)
+        .then(function (data) {
+            $scope.user = data;
+            profileService.FindProfileByUserId(data._id)
+                .then(function (data) {
+                    $scope.userProfile = data[0];
+                })
         });
-}])
-app.controller('myBlogController', ['authService', '$location', '$scope', 'postService', 'timeService', function (authService, $location, $scope, postService, timeService) {
+
+}]);
+app.controller('profileEditController', ['authService', 'userService', '$location', '$scope', 'profileService', function (authService, userService, $location, $scope, profileService) {
+    authService.IsLoggedIn().
+    then(function (data) {
+        if (data.length === 0) {
+            $location.path('/login');
+        } else {
+           // console.log(data);
+            var id = data[0].uid;
+            //console.log(id);
+            userService.GetByUserId(id)
+                .then(function (data) {
+                    //console.log(data);
+                    $scope.user = data;
+                    profileService.FindProfileByUserId(data._id)
+                        .then(function (data) {
+                            $scope.userProfile = data[0];
+                        })
+                });
+        }
+    });
+}]);
+app.controller('myBlogController', ['authService', '$location', '$scope', 'postService', 'timeService', 'profileService', function (authService, $location, $scope, postService, timeService, profileService) {
     $scope.posts = [];
     authService.IsLoggedIn().
         then(function (data) {
             if (data.length === 0) {
                 $location.path('/login');
             } else {
+                $scope.curUser = data[0];
                 postService.GetPostByUserId(data[0].uid)
                     .then(function (data) {
                         $scope.posts = data;
@@ -431,7 +483,6 @@ app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$loc
         .then(function (data) {
             $scope.post = data;
             var commentsId = $scope.post.comments;
-            //var comments = [];
             angular.forEach(commentsId, function (value, index) {
                 commentService.GetCommentById(value)
                     .then(function (data) {
@@ -439,7 +490,10 @@ app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$loc
                         //$scope.allComments = comments;
                     });
             });
-            //$scope.allComments = comments;
+            userService.GetByUserId($scope.post.user)
+                .then(function (data) {
+                    $scope.author = data;
+                });
         });
 
     authService.IsLoggedIn()
@@ -464,13 +518,10 @@ app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$loc
             $scope.comment.username =curUser.username;
             $scope.comment.postId = $scope.post._id;
             $scope.comment.time = new Date();
-            //console.log($scope.comment);
             commentService.CreateComment($scope.comment)
                 .then(function (data) {
-                    //console.log(data._id);
                     $scope.post.comments.push(data._id);
                     $scope.allComments.push(data);
-                    //console.log($scope.post);
                     postService.UpdatePost($scope.post)
                         .then(function (data) {
                             if (data) {
@@ -480,7 +531,6 @@ app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$loc
                 });
         }
     }
-
 
     $scope.back = function() {
         $location.path('/home');

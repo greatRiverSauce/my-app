@@ -1,1 +1,48 @@
-<!--<img src="../uploads/02b6fe3edcbac85a506cb117aa25357a" alt="">-->
+<div class="head"></div>
+<div ng-controller="profileController" style="width: 800px;margin:auto;margin-top: 50px">
+    <div class="row">
+        <legend>User profile </legend>
+        <div class="col-md-8 ">
+            <form class="form-horizontal" method="post" enctype="multipart/form-data" action={{action}}>
+
+                <div class="form-group">
+                    <label>Username:</label>
+                    {{user.username}}
+                    <!--<input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username">-->
+                </div>
+                <div class="form-group">
+                    <label for="birth">Birth</label>
+                    <input type="text" class="form-control" id="birth" placeholder="yy/mm/dd">
+                </div>
+                <div class="form-group">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input type="email" class="form-control" id="exampleInputEmail1" placeholder="Email">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="phone number">
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optionsRadios" id="male" value="male" checked>
+                        Male
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optionsRadios" id="female" value="female">
+                        Female
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-default">Submit</button>
+
+            </form>
+        </div>
+        <div class="col-md-4">
+            <img src="http://websamplenow.com/30/userprofile/images/avatar.jpg" class="img-responsive img-thumbnail ">
+        </div>
+    </div>
+
+</div>
+</div>
