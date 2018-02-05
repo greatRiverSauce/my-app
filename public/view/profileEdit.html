@@ -6,29 +6,8 @@
             <form class="form-horizontal">
                 <div class="form-group">
                     <label>Username:</label>
-                    <input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username">
+                    <input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username" readonly>
                 </div>
-                <!--{{ gender.group1 }}-->
-                <!--<div class="form-group" ng-model="gender.group1">-->
-                    <!--<div class="radio">-->
-                        <!--<label>-->
-                            <!--<input type="radio" name="optionsRadios" id="male" value="male">-->
-                            <!--Male-->
-                        <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                        <!--<label>-->
-                            <!--<input type="radio" name="optionsRadios" id="female" value="female">-->
-                            <!--Female-->
-                        <!--</label>-->
-                    <!--</div>-->
-                    <!--<div class="radio">-->
-                        <!--<label>-->
-                            <!--<input type="radio" name="optionsRadios" id="other" value="other">-->
-                            <!--Other-->
-                        <!--</label>-->
-                    <!--</div>-->
-                <!--</div>-->
                     <div ng-repeat="gender in genderArr" >
                         <input type="radio" name="optionsRadios" id="other" value="{{gender.name}}" ng-model="$parent.selectedGender" >
                         <label>
@@ -62,7 +41,9 @@
             </form>
         </div>
         <div class="col-md-4">
-            <img src="/img/uploads/photo/{{userProfile.photo}}" style="width:200px;height:200px;overflow: hidden">
+            <img ng-if="userProfile.photo === ''" src="/img/uploads/photo/default.jpg" style="width:200px;height:200px;overflow: hidden">
+            <img ng-if="userProfile.photo !== ''" src="/img/uploads/photo/{{userProfile.photo}}" style="width:200px;height:200px;overflow: hidden">
+            <!--<img src="/img/uploads/photo/{{userProfile.photo}}" style="width:200px;height:200px;overflow: hidden">-->
             <input type="file" id="file" onchange="angular.element(this).scope().uploadavtar(this.files)"/>
             <img src="" id="temp_image" width="100">
         </div>

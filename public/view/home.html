@@ -11,10 +11,9 @@
                     <i post="post0" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post0.likes.indexOf(uid) !== -1]">
 
                     </i>
-
-                    <h5>{{getTime(post.time)}}</h5>
+                    <h5>{{getTime(post0.time)}}</h5>
                     <p>
-                        {{post.content}}
+                        {{post0.content}}
                     </p>
                 </div>
             </div>
@@ -24,10 +23,15 @@
             <div class="row post" ng-repeat="post1 in post1">
                 <div ng-click="viewDetail(post1._id); $event.stopImmediatePropagation();">
                     <img src="/img/uploads/{{post1.imgs}}" alt="">
-                    <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
-                    <h5>{{getTime(post.time)}}</h5>
+                    <span class="cnt">{{post1.likes.length}}</span>&nbsp;
+                    <!--class="ion-ios-heart-outline likeIt"-->
+                    <i post="post1" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post1.likes.indexOf(uid) !== -1]">
+
+                    </i>
+
+                    <h5>{{getTime(post1.time)}}</h5>
                     <p>
-                        {{post.content}}
+                        {{post1.content}}
                     </p>
                 </div>
             </div>
@@ -36,15 +40,15 @@
             <div class="row post" ng-repeat="post2 in post2">
                 <div ng-click="viewDetail(post2._id); $event.stopImmediatePropagation();">
                     <img src="/img/uploads/{{post2.imgs}}" alt="">
-                    <a class="like" href="">
-                        <span class="cnt">{{post.likes}}</span>
-                        &nbsp;
-                        <i class="ion-ios-heart-outline">
-                        </i>
-                    </a>
-                    <h5>{{getTime(post.time)}}</h5>
+                    <span class="cnt">{{post2.likes.length}}</span>&nbsp;
+                    <!--class="ion-ios-heart-outline likeIt"-->
+                    <i post="post2" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post2.likes.indexOf(uid) !== -1]">
+
+                    </i>
+
+                    <h5>{{getTime(post2.time)}}</h5>
                     <p>
-                        {{post.content}}
+                        {{post2.content}}
                     </p>
                 </div>
             </div>

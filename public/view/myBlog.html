@@ -1,30 +1,85 @@
 <div class="head"></div>
 <div ng-controller="myBlogController">
     <div class="container">
-        <div class="info">
-            <div class="row">
-                <div class="col col-lg-4">
-                    <img src="http://ny1y263yp3-flywheel.netdna-ssl.com/palmas/wp-content/uploads/sites/7/2016/03/man.jpg" alt="">
+        <!--<div class="info">-->
+            <!--<div class="row">-->
+                <!--<div class="col col-lg-4">-->
+                    <!--<img src="http://ny1y263yp3-flywheel.netdna-ssl.com/palmas/wp-content/uploads/sites/7/2016/03/man.jpg" alt="">-->
+                <!--</div>-->
+                <!--<div class="col col-lg-8">-->
+                    <!--<h3>{{curUser.username}}</h3>-->
+                    <!--<p>John Doe is an full stack developer from Auckland, New Zealand.-->
+                        <!--He likes to write fiction books when he is not busy coding themes.</p>-->
+                <!--</div>-->
+            <!--</div>-->
+        <!--</div>-->
+        <div class="row" >
+            <div class="col col-lg-4">
+                <div class="row post"  ng-repeat="post0 in post0">
+                    <div ng-click="viewDetail(post0._id); $event.stopImmediatePropagation();">
+                        <img src="/img/uploads/{{post0.imgs}}" alt="">
+                        <span class="cnt">{{post0.likes.length}}</span>&nbsp;
+                        <!--class="ion-ios-heart-outline likeIt"-->
+                        <i post="post0" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post0.likes.indexOf(uid) !== -1]">
+
+                        </i>
+
+                        <h5>{{getTime(post0.time)}}</h5>
+                        <p>
+                            {{post0.content}}
+                        </p>
+                    </div>
                 </div>
-                <div class="col col-lg-8">
-                    <h3>{{curUser.username}}</h3>
-                    <p>John Doe is an full stack developer from Auckland, New Zealand.
-                        He likes to write fiction books when he is not busy coding themes.</p>
+
+            </div>
+            <div class="col col-lg-4" >
+                <div class="row post" ng-repeat="post1 in post1">
+                    <div ng-click="viewDetail(post1._id); $event.stopImmediatePropagation();">
+                        <img src="/img/uploads/{{post1.imgs}}" alt="">
+                        <span class="cnt">{{post1.likes.length}}</span>&nbsp;
+                        <!--class="ion-ios-heart-outline likeIt"-->
+                        <i post="post1" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post1.likes.indexOf(uid) !== -1]">
+
+                        </i>
+
+                        <h5>{{getTime(post1.time)}}</h5>
+                        <p>
+                            {{post1.content}}
+                        </p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="blog" ng-repeat="post in posts">
-                <a href="#/viewPost/{{post._id}}" >
-                    <img src="/img/uploads/{{post.imgs}}" alt="">
-                    <a class="like" href=""><span class="cnt">{{post.likes}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>
-                    <h5>{{getTime(post.time)}}</h5>
-                    <p>
-                        {{post.content}}
-                    </p>
-                </a>
+            <div class="col col-lg-4" >
+                <div class="row post" ng-repeat="post2 in post2">
+                    <div ng-click="viewDetail(post2._id); $event.stopImmediatePropagation();">
+                        <img src="/img/uploads/{{post2.imgs}}" alt="">
+                        <span class="cnt">{{post2.likes.length}}</span>&nbsp;
+                        <!--class="ion-ios-heart-outline likeIt"-->
+                        <i post="post2" class="likeIt" ng-class="{true:'ion-ios-heart', false:'ion-ios-heart-outline'}[post2.likes.indexOf(uid) !== -1]">
+
+                        </i>
+
+                        <h5>{{getTime(post2.time)}}</h5>
+                        <p>
+                            {{post2.content}}
+                        </p>
+                    </div>
+                </div>
+
             </div>
         </div>
+        <!--<div class="row">-->
+            <!--<div class="blog" ng-repeat="post in posts">-->
+                <!--<a href="#/viewPost/{{post._id}}" >-->
+                    <!--<img src="/img/uploads/{{post.imgs}}" alt="">-->
+                    <!--<a class="likeIt" href=""><span class="cnt">{{post.likes.length}}</span>&nbsp;<i class="ion-ios-heart-outline"></i></a>-->
+                    <!--<h5>{{getTime(post.time)}}</h5>-->
+                    <!--<p>-->
+                        <!--{{post.content}}-->
+                    <!--</p>-->
+                <!--</a>-->
+            <!--</div>-->
+        <!--</div>-->
         <div style="clear:both;"></div>
     </div>
 

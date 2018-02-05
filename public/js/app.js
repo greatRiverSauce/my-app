@@ -358,7 +358,7 @@ app.controller('registerController', ['$location', '$scope', '$http', 'userServi
             });
     }
 }]);
-app.controller('homeController', ['$scope', 'postService', '$location', 'likeService', 'authService', function ($scope, postService, $location, likeService, authService) {
+app.controller('homeController', ['$scope', 'postService', '$location', 'likeService', 'authService', 'timeService', function ($scope, postService, $location, likeService, authService, timeService) {
     authService.IsLoggedIn()
         .then(function (data) {
             if (data.length != 0) {
@@ -383,6 +383,9 @@ app.controller('homeController', ['$scope', 'postService', '$location', 'likeSer
         });
     $scope.viewDetail = function (id) {
         $location.path('/viewPost/' + id);
+    }
+    $scope.getTime = function (time) {
+        return timeService.GetTime(time);
     }
 }]);
 app.controller('settingController', ['$scope', '$http', '$location', '$rootScope', 'userService', 'authService', '$routeParams', function ($scope, $http, $rootScope, $location, userService, authService, $routeParams) {
@@ -434,7 +437,7 @@ app.controller('profileController', ['authService', 'userService', '$location', 
                     })
             });
     }
-    
+
 }]);
 app.controller('profileNameController', ['authService', 'userService', '$location', '$routeParams','$scope', 'profileService', function (authService, userService, $location, $routeParams, $scope, profileService) {
         $scope.name = $routeParams.name;
@@ -447,7 +450,6 @@ app.controller('profileNameController', ['authService', 'userService', '$locatio
             });
 
 }]);
-
 app.controller('profileEditController', ['authService', 'userService', '$location', '$scope', 'profileService', '$http', function (authService, userService, $location, $scope, profileService, $http) {
     $scope.male = false;
     $scope.female = false;
@@ -529,15 +531,27 @@ app.controller('myBlogController', ['authService', '$location', '$scope', 'postS
                 $scope.curUser = data[0];
                 postService.GetPostByUserId(data[0].uid)
                     .then(function (data) {
-                        $scope.posts = data;
+                        $scope.post0 = [];
+                        $scope.post1 = [];
+                        $scope.post2 = [];
+                        var len = data.length;
+                        for (var i = 0; i < len; i++) {
+                            if (i%3 === 0) {
+                                $scope.post0.push(data[i]);
+                            } else if (i%3 === 1) {
+                                $scope.post1.push(data[i]);
+                            } else if (i%3 === 2){
+                                $scope.post2.push(data[i]);
+                            }
+                        }
                     })
             }
         });
     $scope.getTime = function (time) {
         return timeService.GetTime(time);
     }
-    $scope.viewDetail = function (post) {
-        $location.path('/viewPost/' + post._id);
+    $scope.viewDetail = function (id) {
+        $location.path('/viewPost/' + id);
     }
 }]);
 app.controller('newPostController', ['$scope','$http', 'authService', 'userService','$location', function ($scope, $http, authService, userService, $location) {
@@ -718,7 +732,6 @@ app.directive("likeIt", ['authService', 'likeService', 'postService', function(a
 
                                         
                                     } else {
-                                        console.log(data);
                                         likeService.RemoveLike(scope.post._id, uid)
                                             .then(function (data) {
                                                 var pos = scope.post.likes.indexOf(uid);
