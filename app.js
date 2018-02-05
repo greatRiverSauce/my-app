@@ -8,6 +8,7 @@ var express = require('express'),
 
 var multer = require('multer');
 var upload = multer({dest:__dirname+'/public/img/uploads'});// image directory in the server
+var uploadPhoto = multer({dest:__dirname+'/public/img/uploads/photo'});
 var ObjectId = require('mongoose').Types.ObjectId;
 mongoose.connect('mongodb://gao:gaoxinhe@ds113358.mlab.com:13358/gao');
 
@@ -48,7 +49,7 @@ var ProfileSchema = mongoose.Schema({
         required: true
     },
     'photo': String,
-    'birth': Date,
+    'birth': String,
     'gender': String,
     'bio':String,
     'email': String,
@@ -57,6 +58,17 @@ var ProfileSchema = mongoose.Schema({
 });
 
 var ImgSchema = mongoose.Schema({
+    'fileName': {
+        type: String,
+        required: true
+    },
+    'originalName': {
+        type: String,
+        required: true
+    }
+});
+
+var PhotoImgSchema = mongoose.Schema({
     'fileName': {
         type: String,
         required: true
@@ -108,6 +120,7 @@ var Profile = mongoose.model('profiles', ProfileSchema);
 var Post = mongoose.model('posts',PostSchema);
 var Comment = mongoose.model('comments', CommentSchema);
 var Img = mongoose.model('images',ImgSchema);
+var PhotoImg = mongoose.model('photos', PhotoImgSchema);
 var Like = mongoose.model('likes', LikeSchema);
 var Logged = mongoose.model('loggeds', LoggedSchema);
 
@@ -208,6 +221,17 @@ app.post('/createProfile', function (req, res) {
         }
     })
 });
+
+app.post('/updateProfile', function (req, res) {
+    var query = {_id: req.body._id};
+    Profile.update(query, req.body, {multi:true}, function (err, doc) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.send({'msg':"You have successfully updated your profile"});
+        }
+    })
+})
 
 app.get('/findProfile/:uid', function (req, res) {
     var uid = req.params.uid;
@@ -319,5 +343,19 @@ app.get('/logout', function (req, res) {
     });
 })
 
+app.post('/uploadPhoto', uploadPhoto.single('file'), function (req, res) {
+    var myFile = req.file;
+    var fileName = myFile.filename;
+    var originalName = myFile.originalname;
+    var photoImg = new PhotoImg({
+        fileName: fileName,
+        originalName: originalName
+    });
+    photoImg.save(function (err, doc) {
+        if (!err) {
+            res.send(doc);
+        }
+    });
+})
 
-
+//<img src="/img/uploads/photo/{{userProfile.photo === '' ? default : userProfile.photo}}" style="width:200px;height:200px;overflow: hidden">

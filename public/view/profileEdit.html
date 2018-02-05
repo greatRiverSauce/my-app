@@ -3,12 +3,40 @@
     <div class="row">
         <legend>User profile </legend>
         <div class="col-md-8 ">
-            <form class="form-horizontal" method="post" enctype="multipart/form-data" action={{action}}>
-
+            <form class="form-horizontal">
                 <div class="form-group">
                     <label>Username:</label>
                     <input type="text" class="form-control" id="username" placeholder="Username" ng-model="user.username">
                 </div>
+                <!--{{ gender.group1 }}-->
+                <!--<div class="form-group" ng-model="gender.group1">-->
+                    <!--<div class="radio">-->
+                        <!--<label>-->
+                            <!--<input type="radio" name="optionsRadios" id="male" value="male">-->
+                            <!--Male-->
+                        <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                        <!--<label>-->
+                            <!--<input type="radio" name="optionsRadios" id="female" value="female">-->
+                            <!--Female-->
+                        <!--</label>-->
+                    <!--</div>-->
+                    <!--<div class="radio">-->
+                        <!--<label>-->
+                            <!--<input type="radio" name="optionsRadios" id="other" value="other">-->
+                            <!--Other-->
+                        <!--</label>-->
+                    <!--</div>-->
+                <!--</div>-->
+                    <div ng-repeat="gender in genderArr" >
+                        <input type="radio" name="optionsRadios" id="other" value="{{gender.name}}" ng-model="$parent.selectedGender" >
+                        <label>
+                            {{gender.name}}
+                        </label>
+                    </div>
+                {{msg}}
+
                 <div class="form-group">
                     <label for="location">Location</label>
                     <input type="text" class="form-control" id="location" placeholder="location" ng-model="userProfile.location">
@@ -27,28 +55,18 @@
                 </div>
                 <div class="form-group">
                     <label for="bio">Bio</label>
-                    <textarea class="form-control" id="bio" placeholder="bio" ng-model="userProfile.bio">
+                    <textarea class="form-control" id="bio" placeholder="bio" ng-model="userProfile.bio"></textarea>
                 </div>
-                <!--<div class="radio">-->
-                    <!--<label>-->
-                        <!--<input type="radio" name="optionsRadios" id="male" value="male" checked>-->
-                        <!--Male-->
-                    <!--</label>-->
-                <!--</div>-->
-                <!--<div class="radio">-->
-                    <!--<label>-->
-                        <!--<input type="radio" name="optionsRadios" id="female" value="female">-->
-                        <!--Female-->
-                    <!--</label>-->
-                <!--</div>-->
-
-                <button type="submit" class="btn btn-default">Submit</button>
+                <button type="button" class="btn btn-default" ng-click="checkoptionsAndSave(genderArr)">Save</button>
 
             </form>
         </div>
         <div class="col-md-4">
-            <img src="http://websamplenow.com/30/userprofile/images/avatar.jpg" class="img-responsive img-thumbnail ">
+            <img src="/img/uploads/photo/{{userProfile.photo}}" style="width:200px;height:200px;overflow: hidden">
+            <input type="file" id="file" onchange="angular.element(this).scope().uploadavtar(this.files)"/>
+            <img src="" id="temp_image" width="100">
         </div>
+
     </div>
 
 </div>

@@ -21,6 +21,9 @@ app.config(function($routeProvider) {
     }).when('/viewProfile/:uid', {
         templateUrl: 'view/profile.html',
         controller: 'profileController'
+    }).when('/viewProfileByName/:name', {
+        templateUrl: 'view/profileByName.html',
+        controller: 'profileNameController'
     }).when('/myBlog', {
         templateUrl: 'view/myBlog.html',
         controller: 'myBlogController'
@@ -72,9 +75,6 @@ app.factory('authService', ['$http', '$location', '$rootScope', '$q', function (
         var deferred = $q.defer();
         $http.post('http://localhost:3000/logged', {uid: uid})
             .then(function (data) {
-                //alert(data.data.msg);
-                //$window.location.reload();
-                //$location.path('/');
                 deferred.resolve(data.data);
             });
         return deferred.promise;
@@ -135,6 +135,7 @@ app.factory('userService', ['$rootScope', '$q', '$http', function ($rootScope, $
 app.factory('profileService',['$http', '$q', function ($http, $q) {
     var service = {};
     service.CreateProfile = CreateProfile;
+    service.UpdateProfile = UpdateProfile;
     service.FindProfileByUserId = FindProfileByUserId;
     return service;
 
@@ -149,6 +150,14 @@ app.factory('profileService',['$http', '$q', function ($http, $q) {
     function FindProfileByUserId(id) {
         var deferred = $q.defer();
         $http.get('http://localhost:3000/findProfile/'+ id)
+            .then(function (data) {
+                deferred.resolve(data.data);
+            });
+        return deferred.promise;
+    }
+    function UpdateProfile(profile) {
+        var deferred = $q.defer();
+        $http.post('http://localhost:3000/updateProfile', profile)
             .then(function (data) {
                 deferred.resolve(data.data);
             });
@@ -414,36 +423,101 @@ app.controller('settingController', ['$scope', '$http', '$location', '$rootScope
     }
 }])
 app.controller('profileController', ['authService', 'userService', '$location', '$routeParams','$scope', 'profileService', function (authService, userService, $location, $routeParams, $scope, profileService) {
-    userService.GetByUserId($routeParams.uid)
-        .then(function (data) {
-            $scope.user = data;
-            profileService.FindProfileByUserId(data._id)
-                .then(function (data) {
-                    $scope.userProfile = data[0];
-                })
-        });
+    if ($routeParams.uid !== undefined) {
+        //console.log($routeParams.uid);
+        userService.GetByUserId($routeParams.uid)
+            .then(function (data) {
+                $scope.user = data;
+                profileService.FindProfileByUserId(data._id)
+                    .then(function (data) {
+                        $scope.userProfile = data[0];
+                    })
+            });
+    }
+    
+}]);
+app.controller('profileNameController', ['authService', 'userService', '$location', '$routeParams','$scope', 'profileService', function (authService, userService, $location, $routeParams, $scope, profileService) {
+        $scope.name = $routeParams.name;
+        userService.GetByUsername($routeParams.name)
+            .then(function (data) {
+                profileService.FindProfileByUserId(data[0]._id)
+                    .then(function (data) {
+                        $scope.userProfile = data[0];
+                    })
+            });
 
 }]);
-app.controller('profileEditController', ['authService', 'userService', '$location', '$scope', 'profileService', function (authService, userService, $location, $scope, profileService) {
-    authService.IsLoggedIn().
-    then(function (data) {
-        if (data.length === 0) {
-            $location.path('/login');
-        } else {
-           // console.log(data);
-            var id = data[0].uid;
-            //console.log(id);
-            userService.GetByUserId(id)
-                .then(function (data) {
-                    //console.log(data);
-                    $scope.user = data;
-                    profileService.FindProfileByUserId(data._id)
-                        .then(function (data) {
-                            $scope.userProfile = data[0];
-                        })
-                });
+
+app.controller('profileEditController', ['authService', 'userService', '$location', '$scope', 'profileService', '$http', function (authService, userService, $location, $scope, profileService, $http) {
+    $scope.male = false;
+    $scope.female = false;
+    $scope.other = false;
+    $scope.genderArr = [
+        {'name' : 'male'},
+        {'name' : 'female'},
+        {'name' : 'other'}
+    ];
+    authService.IsLoggedIn()
+        .then(function (data) {
+            if (data.length === 0) {
+                $location.path('/login');
+            } else {
+                // console.log(data);
+                var id = data[0].uid;
+                //console.log(id);
+                userService.GetByUserId(id)
+                    .then(function (data) {
+                        //console.log(data);
+                        $scope.user = data;
+                        profileService.FindProfileByUserId(data._id)
+                            .then(function (data) {
+                                $scope.userProfile = data[0];
+                                $scope.selectedGender = data[0].gender;
+                            })
+                    });
+            }
+        });
+
+    $scope.uploadavtar = function(files) {
+        var imagefile = document.querySelector('#file');
+        if (imagefile.files && imagefile.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#temp_image')
+                    .attr('src', e.target.result);
+            };
+            reader.readAsDataURL(imagefile.files[0]);
+            this.imagefile = imagefile.files[0];
+        }else{
+            console.log("Image not selected");
         }
-    });
+
+        var fd = new FormData();
+        //Take the first selected file
+        fd.append("file", files[0]);
+
+        $http.post("/uploadPhoto", fd, {
+            withCredentials: true,
+            headers: {'Content-Type': undefined },
+            transformRequest: angular.identity
+        }).then(function successCallback(response) {
+            var photoImg= response.data.fileName;
+            console.log(photoImg);
+            $scope.userProfile.photo = photoImg;
+        }, function errorCallback(response) {
+            alert(response);
+        });
+    }
+    $scope.checkoptionsAndSave = function (choice) {
+        if ($scope.selectedGender!=undefined) {
+            $scope.userProfile.gender = $scope.selectedGender;
+        }
+        profileService.UpdateProfile($scope.userProfile)
+            .then(function (data) {
+                alert(data.msg);
+            })
+    };
+
 }]);
 app.controller('myBlogController', ['authService', '$location', '$scope', 'postService', 'timeService', 'profileService', function (authService, $location, $scope, postService, timeService, profileService) {
     $scope.posts = [];
@@ -506,7 +580,7 @@ app.controller('singlePostController', ['$http', '$scope', '$routeParams', '$loc
                         curUser = data;
                     });
             }
-        })
+        });
     $scope.getTime = function (time) {
         return timeService.GetTime(time);
     }

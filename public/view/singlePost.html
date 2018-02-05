@@ -25,7 +25,7 @@
                 <div class="info">
                     <h4>Comments:</h4>
                     <ul ng-repeat="com in allComments">
-                        <li>{{com.content}} - {{com.username}} - {{getTime(com.time)}}</li>
+                        <li>{{com.content}} - <a href="#/viewProfileByName/{{com.username}}">@{{com.username}}</a> - {{getTime(com.time)}}</li>
                     </ul>
                 </div>
                 <div class="info" >
